@@ -34,6 +34,32 @@ async function fetchLeaderboard() {
     });
 }
 
+//randomly select and set an image for the background
+function setRandomBackground() {
+    const backgroundImages = [
+        'Assets/Art/jpg/snow_cow.jpg',
+        'Assets/Art/jpg/storm_cow.jpg',
+        'Assets/Art/jpg/fall_cow.jpg',
+        'Assets/Art/jpg/fall1_cow.jpg',
+        'Assets/Art/jpg/openart-image_-xUOUzzX_1733088256941_raw.jpg',
+        'Assets/Art/jpg/sunset_cow2.jpg',
+        'Assets/Art/jpg/sunset_cow3.jpg',
+        'Assets/Art/jpg/sunset_cow4.jpg',
+        'Assets/Art/jpg/stars_cow1.jpg',
+        'Assets/Art/jpg/stars_cow2.jpg',
+        'Assets/Art/jpg/rainbow_cow1.jpg',
+        'Assets/Art/jpg/rainbow_cow2.jpg',
+        'Assets/Art/jpg/Tile_cow2.jpg',
+        'Assets/Art/jpg/Tile_cow1.jpg',
+    ];
+    const randomIndex = Math.floor(Math.random() * backgroundImages.length);
+    // make sure that the image is no-repeat center center fill
+    // document.body.style.background = `url('${backgroundImages[randomIndex]}') no-repeat center center fixed`;
+    document.body.style.background = `url('${backgroundImages[randomIndex]}') center center fixed`;
+    // document.body.style.backgroundSize = 'cover';
+}
+
+setRandomBackground();
 
 // Fetch leaderboard data on page load
 document.addEventListener('DOMContentLoaded', fetchLeaderboard);
