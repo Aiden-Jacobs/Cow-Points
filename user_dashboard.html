@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        @font-face {
+            font-family: 'MyCustomFont';
+            src: url('Assets/Fonts/PixeloidMono-d94EV.ttf') format('truetype'); /* Replace with the correct font file path */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #d3d3d3;
+            font-family: 'MyCustomFont';
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .dashboard-container {
+            background-color: #f0f0f0;
+            width: 80%;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 2fr 3fr;
+            grid-gap: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .section {
+            background-color: #c0c0c0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .main-stat {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .friends-list {
+            text-align: left;
+        }
+
+        .friends-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .friends-list li {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .add-point-form input {
+            display: block;
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .add-point-form button {
+            padding: 10px 20px;
+            background-color: #888;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .add-point-form button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Left Column -->
+        <div class="section">
+            <div class="section-title">Username</div>
+            <div class="friends-list">
+                <div class="section-title">Friends</div>
+                <ul>
+                    <li><span>Aiden</span> <span>#3</span></li>
+                    <li><span>Amara</span> <span>#1</span></li>
+                    <li><span>Will</span> <span>#25</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div>
+            <div class="section">
+                <div class="section-title">Lifetime Points</div>
+                <div class="main-stat">6</div>
+            </div>
+            <div class="section">
+                <div class="section-title">Leaderboard Position</div>
+                <div class="main-stat">#24</div>
+            </div>
+            <div class="section">
+                <div class="section-title">Add Point</div>
+                <form class="add-point-form">
+                    <input type="text" placeholder="Where?" required>
+                    <input type="text" placeholder="When?" required>
+                    <input type="text" placeholder="Additional Info" required>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
