@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        @font-face {
+            font-family: 'MyCustomFont';
+            src: url('Assets/Fonts/PixeloidMono-d94EV.ttf') format('truetype'); /* Replace with the correct font file path */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('Assets/Art/jpg/fall1_cow.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'MyCustomFont';
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .signup-container {
+            background-color: rgba(128, 128, 128, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .signup-title {
+            font-size: 24px;
+            color: red;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .signup-form input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .signup-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .signup-button:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message, .success-message {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .error-message {
+            color: red;
+        }
+
+        .success-message {
+            color: green;
+        }
+
+        .back-link {
+            margin-top: 15px;
+            display: inline-block;
+            text-decoration: none;
+            color: #007bff;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script type="module" src="sign_up.js"></script>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="signup-title">Sign Up</div>
+        <form class="signup-form" id="signup-form">
+            <input type="username" id="username" placeholder="Username" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit" class="signup-button">Sign Up</button>
+        </form>
+        <p class="error-message" id="error-message"></p>
+        <p class="success-message" id="success-message"></p>
+        <a class="back-link" href="sign_in.html">Already have an account? Sign In</a>
+    </div>
+
+</body>
+</html>
