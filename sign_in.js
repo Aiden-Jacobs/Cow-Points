@@ -21,20 +21,21 @@ document.getElementById('signin-form').addEventListener('submit', async (e) => {
     errorMessage.textContent = '';
     console.log(email);
     // Sign in with Supabase
-    const { user, error } = await _supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
 
-    console.log("user, error", {user, error});
+    // console.log("data, error", {data, error});
+    // console.log("data.user", data.user.id);
     if (error) {
         errorMessage.textContent = 'Sign-in failed: ' + error.message;
     } else {
         alert('Sign-in successful!');
     // Redirect to the dashboard with UUID as a query parameter
-    const { data: { uuid } }  =await _supabase.auth.getUser();
+    // const { data: { uuid } }  =await _supabase.auth.getUser();
     //wait for the user to be signed in before
     //redirecting to the dashboard
 
     // let delayres = await delay(3000);
-
+    const uuid = data.user.id;
     console.log("uuid", uuid);
     
     window.location.href = `user_dashboard.html?uuid=${encodeURIComponent(uuid)}`;
