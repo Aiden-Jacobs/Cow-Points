@@ -23,6 +23,7 @@
 
         .dashboard-container {
             background-color: #f0f0f0;
+            opacity: 0.9;
             width: 80%;
             padding: 20px;
             display: grid;
@@ -88,19 +89,41 @@
         .add-point-form button:hover {
             background-color: #555;
         }
+        .leaderboard-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 1px 2px;
+
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: MyCustomFont;
+        }
+
+        .leaderboard-button:hover {
+            background-color: #b30000;
+        }
     </style>
 </head>
 <body>
+    <a href="cow_point.html">
+        <button class="leaderboard-button">Leaderboard</button>
+    </a>
     <div class="dashboard-container">
         <!-- Left Column -->
         <div class="section">
-            <div class="section-title">Username</div>
+            <div class="section-title" id="Username">Username</div>
             <div class="friends-list">
                 <div class="section-title">Friends</div>
                 <ul>
-                    <li><span>Aiden</span> <span>#3</span></li>
+                    <li><span>Not Done</span> <span>Yet</span></li>
+                    <!-- <li><span>Aiden</span> <span>#3</span></li>
                     <li><span>Amara</span> <span>#1</span></li>
-                    <li><span>Will</span> <span>#25</span></li>
+                    <li><span>Will</span> <span>#25</span></li> -->
                 </ul>
             </div>
         </div>
@@ -109,14 +132,14 @@
         <div>
             <div class="section">
                 <div class="section-title">Lifetime Points</div>
-                <div class="main-stat">6</div>
+                <div class="main-stat" id="userPoints">~</div>
             </div>
             <div class="section">
                 <div class="section-title">Leaderboard Position</div>
-                <div class="main-stat">#24</div>
+                <div class="main-stat" id="leaderboardPosition">#~</div>
             </div>
             <div class="section">
-                <div class="section-title">Add Point</div>
+                <div class="section-title">ADD POINT</div>
                 <form class="add-point-form">
                     <input type="text" placeholder="Where?" required>
                     <input type="text" placeholder="When?" required>
@@ -126,5 +149,6 @@
             </div>
         </div>
     </div>
+<script type="module" src="Dashboard.js"></script>
 </body>
 </html>
