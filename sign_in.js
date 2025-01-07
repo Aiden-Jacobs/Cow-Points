@@ -36,9 +36,17 @@ document.getElementById('signin-form').addEventListener('submit', async (e) => {
 
     // let delayres = await delay(3000);
     const uuid = data.user.id;
+    const session = await _supabase.auth.getSession();
     console.log("uuid", uuid);
-    
-    window.location.href = `user_dashboard.html?uuid=${encodeURIComponent(uuid)}`;
+    console.log("data", data.session);
+    console.log("session", session.data);
+    // for key in session.data console.log(key);
+    for (const key in session.data.session.user ) {
+        console.log(key, session.data.session.user[key]);
+    }
+    // userid
+    console.log("userid", session.data.session.user.id);
+    window.location.href = `user_dashboard.html`;
     }
 });
 
