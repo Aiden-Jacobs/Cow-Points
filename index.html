@@ -73,14 +73,46 @@
         .leaderboard-table td {
             padding: 5px;
         }
+
+        .user-profile-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 5px 5px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: MyCustomFont;
+        }
+        .log-out-button{
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 5px 5px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: MyCustomFont;
+        }
     </style>
 <script type="module" src="main.js"></script>
 </head>
 <body>
-    <!-- Sign-In Button -->
-    <a href="sign_in.html">
-        <button class="sign-in-button">Sign In</button>
-    </a>
+    <div class="header" id="header">
+        <!-- Sign-In Button -->
+        <a href="sign_in.html" id="sign-in-link">
+            <button class="sign-in-button" id="sign-in">Sign In</button>
+        </a>
+        <!-- Log out Button -->
+    </div>  
+
+
 
     <!-- Leaderboard -->
     <div class="leaderboard-container">
