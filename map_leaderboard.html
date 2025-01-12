@@ -45,7 +45,8 @@
             padding: 20px;
             border-radius: 10px;
             text-align: center;
-            width: 400px;
+            width: 80%;
+            height: 80%;
         }
 
         .leaderboard-title {
@@ -54,24 +55,6 @@
             color: red;
             font-weight: bold;
             margin-bottom: 20px;
-        }
-
-        .leaderboard-table {
-            font-family: 'MyCustomFont', Arial, sans-serif;
-            width: 100%;
-            color: red;
-            font-size: 20px;
-            text-align: left;
-            margin-top: 10px;
-        }
-
-        .leaderboard-table th {
-            text-align: left;
-            color: blue;
-        }
-
-        .leaderboard-table td {
-            padding: 5px;
         }
 
         .user-profile-button {
@@ -110,6 +93,11 @@
             cursor: pointer;
             font-family: MyCustomFont;
         }
+        .map-container {
+            padding: 1%;
+            width: 98%;
+            height: 100%;
+        }
     </style>
 <script type="module" src="map_leaderboard.js"></script>
 <!-- leaflet.js css -->
@@ -136,7 +124,9 @@
                 <button class="map-button">Leaderboard</button>
             </a>
         </div>
-        <div id="map" style="width: 100%; height: 200px;"></div>
+        <div class="map-container">
+            <div id="map" style="width: 100%; height: 85%;"></div>
+        </div>
     </div>
 </body>
 </html>
