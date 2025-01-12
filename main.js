@@ -4,7 +4,10 @@ import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+
 const SUPABASE_URL = 'https://sagwqkyampwcuzvllbvm.supabase.co'; // Replace with your Supabase URL
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhZ3dxa3lhbXB3Y3V6dmxsYnZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyNjI5ODAsImV4cCI6MjA0ODgzODk4MH0.K42LmF79J3ZjKhiCkJd7p-Mc7cbj6sySd9hnNT0Aoxc'; // Replace with your anon key
 const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-// console.log(_supabase);
+
+var session = null;
+// try to get the user's session so that we can provide the option to log out or to view the user's profile
+
 
 // Fetch leaderboard data
 async function fetchLeaderboard() {
@@ -63,3 +66,28 @@ setRandomBackground();
 
 // Fetch leaderboard data on page load
 document.addEventListener('DOMContentLoaded', fetchLeaderboard);
+try {
+    let session = await _supabase.auth.getSession();
+    console.log("session", session);
+    if (session.data.session !== null) {
+        const button = document.getElementById("sign-in");
+        const link = document.getElementById("sign-in-link");
+        button.textContent = "User Profile";
+        link.href = "user_dashboard.html";
+        button.classList.remove("sign-in-button");
+        button.classList.add("user-profile-button");
+        // add a log out button
+        const logoutButton = document.createElement("button");
+        logoutButton.textContent = "LOG OUT";
+        logoutButton.classList.add("log-out-button");
+        logoutButton.onclick = async () => {
+            await _supabase.auth.signOut();
+            window.location.reload();
+        }
+        document.querySelector(".header").appendChild(logoutButton);
+
+        
+    }
+} catch (error) { 
+    console.error("user not logged in");
+}
