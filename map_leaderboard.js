@@ -26,10 +26,16 @@ async function fetchLocations() {
     console.log('Locations:', data);
 
 
-
+    var temp_marker = L.marker([0, 0]);
     data.forEach((location) => {
         const { lat, lng, name } = location;
-        L.marker([lat, lng]).addTo(map).bindPopup(name);
+        temp_marker = L.marker([lat, lng])
+        // add a popup to the marker
+        // temp_marker.bindPopup(name);
+        temp_marker.addTo(map);
+
+
+
         console.log("lat, lng", lat, lng);
     });
 }
