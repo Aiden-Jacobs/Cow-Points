@@ -7,6 +7,17 @@
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
+  // Add the full-screen control to the map
+  L.control.fullscreen().addTo(map);
+
+  // Optional: Handle full-screen events
+  map.on('enterFullscreen', () => {
+    console.log('Entered full-screen mode');
+  });
+
+  map.on('exitFullscreen', () => {
+    console.log('Exited full-screen mode');
+  });
 
   // Add a marker to the map
   let marker = L.marker([40, -103], { draggable: true }).addTo(map);
