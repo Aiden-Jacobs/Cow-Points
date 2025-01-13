@@ -5,9 +5,6 @@ const SUPABASE_URL = 'https://sagwqkyampwcuzvllbvm.supabase.co'; // Replace with
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhZ3dxa3lhbXB3Y3V6dmxsYnZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyNjI5ODAsImV4cCI6MjA0ODgzODk4MH0.K42LmF79J3ZjKhiCkJd7p-Mc7cbj6sySd9hnNT0Aoxc'; // Replace with your anon key
 const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-var session = null;
-// try to get the user's session so that we can provide the option to log out or to view the user's profile
-
 
 // Fetch leaderboard data
 async function fetchLeaderboard() {
@@ -89,5 +86,8 @@ try {
         
     }
 } catch (error) { 
+    // make a pop up that says "user not logged in"
+    alert("User not logged in");
+
     console.error("user not logged in");
 }
