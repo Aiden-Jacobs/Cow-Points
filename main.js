@@ -9,11 +9,12 @@ const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // Fetch leaderboard data
 async function fetchLeaderboard() {
     // console.log('Fetching leaderboard...');
+    // alert("Fetching leaderboard...");
     const { data, error } = await _supabase
         .from('Total_points') // Replace with your table name
         .select('*')
         .order('num_points', { ascending: false });
-
+    // alert("leaderboard data: " + data);
     if (error) {
         console.error('Error fetching leaderboard:', error);
         return;
@@ -60,7 +61,7 @@ function setRandomBackground() {
 }
 
 setRandomBackground();
-
+fetchLeaderboard();
 // Fetch leaderboard data on page load
 document.addEventListener('DOMContentLoaded', fetchLeaderboard);
 try {
@@ -87,7 +88,7 @@ try {
     }
 } catch (error) { 
     // make a pop up that says "user not logged in"
-    alert("User not logged in");
+    // alert("User not logged in");
 
     console.error("user not logged in");
 }
