@@ -46,6 +46,7 @@
             border-radius: 10px;
             text-align: center;
             width: 400px;
+            overflow: auto;
         }
 
         .leaderboard-title {
@@ -110,6 +111,17 @@
             cursor: pointer;
             font-family: MyCustomFont;
         }
+        @media screen and (max-width: 768px) {
+            .leaderboard-container {
+                overflow: auto;
+                width: 80%;
+            }
+            .sign-in-button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+        }
+
     </style>
 <script type="module" src="main.js"></script>
 </head>
