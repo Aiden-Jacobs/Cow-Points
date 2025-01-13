@@ -28,25 +28,7 @@ document.getElementById('signin-form').addEventListener('submit', async (e) => {
     if (error) {
         errorMessage.textContent = 'Sign-in failed: ' + error.message;
     } else {
-        alert('Sign-in successful!');
-    // Redirect to the dashboard with UUID as a query parameter
-    // const { data: { uuid } }  =await _supabase.auth.getUser();
-    //wait for the user to be signed in before
-    //redirecting to the dashboard
-
-    // let delayres = await delay(3000);
-    const uuid = data.user.id;
-    const session = await _supabase.auth.getSession();
-    console.log("uuid", uuid);
-    console.log("data", data.session);
-    console.log("session", session.data);
-    // for key in session.data console.log(key);
-    for (const key in session.data.session.user ) {
-        console.log(key, session.data.session.user[key]);
-    }
-    // userid
-    console.log("userid", session.data.session.user.id);
-    window.location.href = `user_dashboard.html`;
+        window.location.href = `user_dashboard.html`;
     }
 });
 
