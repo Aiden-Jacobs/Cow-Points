@@ -63,7 +63,7 @@ function setRandomBackground() {
 setRandomBackground();
 fetchLeaderboard();
 // Fetch leaderboard data on page load
-document.addEventListener('DOMContentLoaded', fetchLeaderboard);
+// document.addEventListener('DOMContentLoaded', fetchLeaderboard);
 try {
     let session = await _supabase.auth.getSession();
     console.log("session", session);
