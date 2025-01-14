@@ -82,7 +82,9 @@ try {
             await _supabase.auth.signOut();
             window.location.reload();
         }
-        document.querySelector(".header").appendChild(logoutButton);
+        // add log out button to header-buttons
+        document.getElementById("header-buttons").appendChild(logoutButton);        
+        // document.querySelector(".header").appendChild(logoutButton);
 
         
     }
