@@ -1,31 +1,27 @@
-// import { createClient } from '@supabase/supabase-js';
+// imports the supabase client from the cdn
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 // Initialize Supabase
-const SUPABASE_URL = 'https://sagwqkyampwcuzvllbvm.supabase.co'; // Replace with your Supabase URL
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhZ3dxa3lhbXB3Y3V6dmxsYnZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyNjI5ODAsImV4cCI6MjA0ODgzODk4MH0.K42LmF79J3ZjKhiCkJd7p-Mc7cbj6sySd9hnNT0Aoxc'; // Replace with your anon key
-const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_URL = 'https://sagwqkyampwcuzvllbvm.supabase.co'; // supabase url
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhZ3dxa3lhbXB3Y3V6dmxsYnZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyNjI5ODAsImV4cCI6MjA0ODgzODk4MH0.K42LmF79J3ZjKhiCkJd7p-Mc7cbj6sySd9hnNT0Aoxc'; // anon key
+const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY); 
 
 
-// Fetch leaderboard data
+// Fetches the leaderboard data and populates the leaderboard table
 async function fetchLeaderboard() {
-    // console.log('Fetching leaderboard...');
-    // alert("Fetching leaderboard...");
+    // supabase query to get the leaderboard data
     const { data, error } = await _supabase
         .from('Total_points') // Replace with your table name
         .select('*')
         .order('num_points', { ascending: false });
-    // alert("leaderboard data: " + data);
     if (error) {
         console.error('Error fetching leaderboard:', error);
         return;
     }
-    // console.log('Leaderboard data:', data);
-    // Populate leaderboard
+    // select the leaderboard table body so that the rows can be added to it
     const leaderboardTableBody = document.querySelector('.leaderboard-table tbody');
     leaderboardTableBody.innerHTML = ''; // Clear existing rows
-
+    // add a row to the leaderboard table for each entry in the supabase data
     data.forEach((entry, index) => {
-        console.log(entry);
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${index + 1}. ${entry.name}</td>
@@ -35,7 +31,7 @@ async function fetchLeaderboard() {
     });
 }
 
-//randomly select and set an image for the background
+//randomly select and set an image for the background so that the page has random backgrounds of cows
 function setRandomBackground() {
     const backgroundImages = [
         'Assets/Art/jpg/snow_cow.jpg',
@@ -54,27 +50,25 @@ function setRandomBackground() {
         'Assets/Art/jpg/Tile_cow1.jpg',
     ];
     const randomIndex = Math.floor(Math.random() * backgroundImages.length);
-    // make sure that the image is no-repeat center center fill
-    // document.body.style.background = `url('${backgroundImages[randomIndex]}') no-repeat center center fixed`;
     document.body.style.background = `url('${backgroundImages[randomIndex]}') center center fixed`;
-    // document.body.style.backgroundSize = 'cover';
 }
 
+// Set random background image
 setRandomBackground();
+// Fetches the leaderboard data and populates the leaderboard table
 fetchLeaderboard();
-// Fetch leaderboard data on page load
-// document.addEventListener('DOMContentLoaded', fetchLeaderboard);
 try {
     let session = await _supabase.auth.getSession();
     console.log("session", session);
     if (session.data.session !== null) {
+        // gets the sign in button so that it can be changed to the user profile button when the user is logged in
         const button = document.getElementById("sign-in");
         const link = document.getElementById("sign-in-link");
         button.textContent = "User Profile";
         link.href = "user_dashboard.html";
         button.classList.remove("sign-in-button");
         button.classList.add("user-profile-button");
-        // add a log out button
+        // create the log out button when the user is logged in so that they can log out
         const logoutButton = document.createElement("button");
         logoutButton.textContent = "LOG OUT";
         logoutButton.classList.add("log-out-button");
@@ -82,15 +76,9 @@ try {
             await _supabase.auth.signOut();
             window.location.reload();
         }
-        // add log out button to header-buttons
-        document.getElementById("header-buttons").appendChild(logoutButton);        
-        // document.querySelector(".header").appendChild(logoutButton);
-
-        
+        // this adds the log out button to the header so that it is visible when the user is logged in
+        document.getElementById("header-buttons").appendChild(logoutButton);                
     }
 } catch (error) { 
-    // make a pop up that says "user not logged in"
-    // alert("User not logged in");
-
     console.error("user not logged in");
 }
