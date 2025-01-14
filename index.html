@@ -21,19 +21,43 @@
             align-items: center;
             height: 100vh;
         }
+        a {
+            text-decoration: none;
+        }   
+
+        /* Header Styling */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #ff9090;
+            color: white;
+            font-family: 'MyCustomFont';
+            border-bottom: 2px solid #b30000;
+            /* position top of the screen */
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-size: 24px;
+            margin: 0;
+            margin-left: 1%;
+        }
 
         .sign-in-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
             background-color: #007bff83;
             color: white;
             border: none;
             padding: 10px 20px;
-            font-size: 16px;
             border-radius: 5px;
             cursor: pointer;
-            font-family: Arial, sans-serif;
+            font-family: MyCustomFont;
+            font-size: 14px;
+            margin-right: 10px;
         }
 
         .sign-in-button:hover {
@@ -75,10 +99,11 @@
             padding: 5px;
         }
 
+        .header-buttons {
+            display: flex;
+            align-items: center;
+        }
         .user-profile-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
             background-color: #ff0000;
             color: white;
             border: none;
@@ -89,9 +114,6 @@
             font-family: MyCustomFont;
         }
         .log-out-button{
-            position: absolute;
-            top: 20px;
-            right: 20px;
             background-color: #ff0000;
             color: white;
             border: none;
@@ -100,6 +122,7 @@
             border-radius: 5px;
             cursor: pointer;
             font-family: MyCustomFont;
+            margin-right: 10px;
         }
         .map-button {
             background-color: #007bffc5;
@@ -111,14 +134,22 @@
             cursor: pointer;
             font-family: MyCustomFont;
         }
-        @media screen and (max-width: 768px) {
+        @media screen and (max-width: 480px) {
             .leaderboard-container {
                 overflow: auto;
                 width: 80%;
             }
             .sign-in-button {
-                font-size: 14px;
+                font-size: 13px;
                 padding: 8px 16px;
+            }
+                        .user-profile-button {
+                font-size: 15px;
+                padding: 5px 5px;
+            }
+            .log-out-button {
+                font-size: 15px;
+                padding: 5px 5px;
             }
         }
 
@@ -126,13 +157,16 @@
 <script type="module" src="main.js"></script>
 </head>
 <body>
-    <div class="header" id="header">
+    <header class="header">
+        <h1 class="header-title">LEADERBOARD</h1>
         <!-- Sign-In Button -->
-        <a href="sign_in.html" id="sign-in-link">
-            <button class="sign-in-button" id="sign-in">Sign In</button>
-        </a>
+        <div id="header-buttons">
+            <a href="sign_in.html" id="sign-in-link">
+                <button class="sign-in-button" id="sign-in">Sign In</button>
+            </a>
+        </div>
         <!-- Log out Button -->
-    </div>  
+    </header>
 
 
 
@@ -141,8 +175,7 @@
         <div class="leaderboard-title">LEADERBOARD</div>
         <div >
             <a href="map_leaderboard.html">
-                <button class="map-button">Map of Points</button>
-            </a>
+                <button class="map-button">Map of Points</button></a>
         </div>
         <table class="leaderboard-table">
             <thead>
