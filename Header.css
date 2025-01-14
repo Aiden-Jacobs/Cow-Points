@@ -1,0 +1,78 @@
+/* Header Styling */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #ff9090;
+    color: white;
+    font-family: 'MyCustomFont';
+    border-bottom: 2px solid #b30000;
+    /* position top of the screen */
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+.header-title {
+    font-size: 24px;
+    margin: 0;
+    margin-left: 1%;
+}
+
+.header-buttons {
+    display: flex;
+    align-items: center;
+}
+.sign-in-button {
+    background-color: #007bff83;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: MyCustomFont;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.sign-in-button:hover {
+    background-color: #0056b3;
+}
+.user-profile-button {
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    padding: 5px 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: MyCustomFont;
+}
+.log-out-button{
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    padding: 5px 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: MyCustomFont;
+    margin-right: 10px;
+}
+
+@media screen and (max-width: 480px) {
+    .sign-in-button {
+        font-size: 13px;
+        padding: 8px 16px;
+    }
+    .user-profile-button {
+        font-size: 13px;
+        padding: 5px 5px;
+    }
+    .log-out-button {
+        font-size: 13px;
+        padding: 5px 5px;
+    }
+}
