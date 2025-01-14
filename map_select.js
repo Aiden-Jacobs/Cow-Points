@@ -1,7 +1,7 @@
-// Description: This file is used to create a map and select a location on the map.
+// Description: This file is used to create the map and select a location on the map to submit to the database
 
-// initialize the map and set the view to the given coordinates
-  const map = L.map('map').setView([40, -103], 3); // Default to London
+// initialize the map and set the view centered on the United States
+  const map = L.map('map').setView([40, -103], 3);
 
   // Add OpenStreetMap tiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -14,23 +14,24 @@
   map.on('enterFullscreen', () => {
     console.log('Entered full-screen mode');
   });
-
   map.on('exitFullscreen', () => {
     console.log('Exited full-screen mode');
   });
 
-  // Add a marker to the map
+  // Adds a marker to the map in the center of the United States so that the user
+  // can select the location of their point to submit.
   let marker = L.marker([40, -103], { draggable: true }).addTo(map);
 
-  // Update input field with marker's position
+  /**
+   * this function updates the location input field with the given lat and lng 
+   * @param {float} lat
+   * @param {float} lng
+   */
   function updateLocationInput(lat, lng) {
     document.getElementById('location').value = `${lat}, ${lng}`;
   }
 
-  // Set initial input value
-//   updateLocationInput(40, -103);
-
-  // Listen for map click event to move the marker
+  // Listen for click events on the map and update the marker location
   map.on('click', (e) => {
     const { lat, lng } = e.latlng;
     console.log("lat, lng", lat, lng);
@@ -39,7 +40,7 @@
     
   });
 
-  // Update input field when the marker is dragged
+  // Listen for drag events on the marker and update the location input
   marker.on('dragend', () => {
     const { lat, lng } = marker.getLatLng();
     updateLocationInput(lat, lng);
