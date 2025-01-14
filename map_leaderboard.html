@@ -14,7 +14,6 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            /* background: url('Assets/Art/jpg/snow_cow.jpg') no-repeat center center fixed; */
             background-size: cover;
             display: flex;
             justify-content: center;
@@ -24,45 +23,6 @@
         a {
             text-decoration: none;
         }   
-        /* Header Styling */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: #ff9090;
-            color: white;
-            font-family: 'MyCustomFont';
-            border-bottom: 2px solid #b30000;
-            /* position top of the screen */
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 100;
-        }
-
-        .header-title {
-            font-size: 24px;
-            margin: 0;
-            margin-left: 1%;
-        }
-
-        .sign-in-button {
-            background-color: #007bff83;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: MyCustomFont;
-            font-size: 14px;
-            margin-right: 10px;
-        }
-
-        .sign-in-button:hover {
-            background-color: #0056b3;
-        }
-
         .leaderboard-container {
             background-color: rgba(128, 128, 128, 0.8);
             padding: 20px;
@@ -78,32 +38,6 @@
             color: red;
             font-weight: bold;
             margin-bottom: 20px;
-        }
-
-        .header-buttons {
-            display: flex;
-            align-items: center;
-        }
-        .user-profile-button {
-            background-color: #ff0000;
-            color: white;
-            border: none;
-            padding: 5px 5px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: MyCustomFont;
-        }
-        .log-out-button{
-            background-color: #ff0000;
-            color: white;
-            border: none;
-            padding: 5px 5px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: MyCustomFont;
-            margin-right: 10px;
         }
         .map-button {
             background-color: #007bffc5;
@@ -125,43 +59,31 @@
                 overflow: auto;
                 width: 80%;
             }
-            .sign-in-button {
-                font-size: 13px;
-                padding: 8px 16px;
-            }
-            .user-profile-button {
-                font-size: 15px;
-                padding: 5px 10px;
-            }
-            .log-out-button {
-                font-size: 15px;
-                padding: 5px 10px;
-            }
         }
     </style>
-<script type="module" src="map_leaderboard.js"></script>
-<!-- leaflet.js css -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<!-- leaflet.js js -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<!-- Leaflet.fullscreen CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.6.0/Control.FullScreen.css" />
-<!-- Leaflet.fullscreen JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.6.0/Control.FullScreen.js"></script>
+    <!-- Header CSS -->
+    <link rel="stylesheet" href="Header.css">
+    <!-- These links are for the map -->
+        <script type="module" src="map_leaderboard.js"></script>
+        <!-- leaflet.js css -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        <!-- leaflet.js js -->
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <!-- Leaflet.fullscreen CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.6.0/Control.FullScreen.css" />
+        <!-- Leaflet.fullscreen JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.6.0/Control.FullScreen.js"></script>
 </head>
 <body>
     <header class="header">
         <h1 class="header-title">Map</h1>
-        <!-- Sign-In Button -->
+        <!-- Header buttons -->
         <div id="header-buttons">
             <a href="sign_in.html" id="sign-in-link">
                 <button class="sign-in-button" id="sign-in">Sign In</button>
             </a>
         </div>
-        <!-- Log out Button -->
     </header>
-
-
 
 
     <!-- Leaderboard -->

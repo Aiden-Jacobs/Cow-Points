@@ -7,7 +7,7 @@
     <style>
         @font-face {
             font-family: 'MyCustomFont';
-            src: url('Assets/Fonts/PixeloidMono-d94EV.ttf') format('truetype'); /* Replace with the correct font file path */
+            src: url('Assets/Fonts/PixeloidMono-d94EV.ttf') format('truetype');
         }
 
         body {
@@ -22,38 +22,10 @@
             height: 100%;
         }
         main {
-            /* overflow-y: scroll; */
-            /* -webkit-overflow-scrolling: touch; */
-            /* flex: 0 1 auto; */
             width: 100%;
-            /* Align center */
             display: flex;
             justify-content: center;
         }
-
-        /* Header Styling */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: #ff9090;
-            color: white;
-            font-family: 'MyCustomFont';
-            border-bottom: 2px solid #b30000;
-            /* position top of the screen */
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 100;
-        }
-
-        .header-title {
-            font-size: 24px;
-            margin: 0;
-            margin-left: 1%;
-        }
-
         .dashboard-container {
             background-color: #ff9090;
             opacity: 0.9;
@@ -64,12 +36,8 @@
             grid-gap: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            /* position bellow the header */
             margin-top: 7%;
-            
-
         }
-
         .section {
             background-color: #fff1de;
             border-radius: 10px;
@@ -112,7 +80,6 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-
         .add-point-form button {
             padding: 10px 20px;
             background-color: #888;
@@ -122,7 +89,6 @@
             cursor: pointer;
             margin-top: 10px;
         }
-
         .add-point-form button:hover {
             background-color: #555;
         }
@@ -150,22 +116,12 @@
 
         /* phone CSS */
         /* General Media Query for Small Devices (iPhones and similar devices) */
-        /* General Media Query for Small Devices (iPhones and similar devices) */
         @media screen and (max-width: 480px) {
             body {
                 flex-direction: column;
                 align-items: stretch;
 
             }
-
-            .header {
-                width: 100%;
-            }
-
-            .header-title {
-                font-size: 20px;
-            }
-
             .leaderboard-button
             {
                 font-size: 14px;
@@ -211,30 +167,21 @@
                 font-size: 14px;
             }
 
-            .leaderboard-button {
-                top: 10px;
-                right: 10px;
-                font-size: 14px;
-                padding: 5px 10px;
-            }
-
             #map {
                 height: 150px;
             }
         }
-
-
     </style>
-    <!-- leaflet.js css -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <!-- leaflet.js js -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <!-- Leaflet.fullscreen CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.6.0/Control.FullScreen.css" />
-    <!-- Leaflet.fullscreen JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.6.0/Control.FullScreen.js"></script>
-  
-
+    <link rel="stylesheet" href="Header.css">
+    <!-- These links are for the map -->
+        <!-- leaflet.js css -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        <!-- leaflet.js js -->
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <!-- Leaflet.fullscreen CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.6.0/Control.FullScreen.css" />
+        <!-- Leaflet.fullscreen JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.6.0/Control.FullScreen.js"></script>
 </head>
 <body>
     <header class="header">
@@ -243,8 +190,6 @@
             <button class="leaderboard-button">Leaderboard</button>
         </a>
     </header>
-    <!-- gap between the header and the content -->
-    <!-- <div style="height: 20px;"></div> -->
     <main>
         <div class="dashboard-container">
             <!-- Left Column -->
@@ -254,9 +199,7 @@
                     <div class="section-title">Friends</div>
                     <ul>
                         <li><span>Not Done</span> <span>Yet</span></li>
-                        <!-- <li><span>Aiden</span> <span>#3</span></li>
-                        <li><span>Amara</span> <span>#1</span></li>
-                        <li><span>Will</span> <span>#25</span></li> -->
+                        <!-- This will be populated by the JS with the user's friends -->
                     </ul>
                 </div>
             </div>
@@ -274,8 +217,8 @@
                 <div class="section">
                     <div class="section-title">ADD POINT</div>
                     <div id="map" style="width: 100%; height: 200px;"></div>
+                    <!-- Form to add a point -->
                     <form class="add-point-form">
-                        <!-- <div id="map " style="width: 100%; height: 200px;"></div> -->
                         <input type="text" placeholder="Location?" required id ="location" readonly>
                         <input type="datetime-local" placeholder="When?" required id="date">
                         <input type="text" placeholder="Additional Info" required id="description">
