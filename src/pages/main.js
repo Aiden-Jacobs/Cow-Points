@@ -1,4 +1,4 @@
-import { setRandomBackground, add_header_buttons } from './js/utils.js';
+import { setRandomBackground, add_header_buttons } from '../utils/utils.js';
 // imports the supabase client from the cdn
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 // Initialize Supabase

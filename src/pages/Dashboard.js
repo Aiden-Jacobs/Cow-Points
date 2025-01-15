@@ -1,4 +1,4 @@
-import { setRandomBackground } from './js/utils.js';
+import { setRandomBackground } from '../utils/utils.js';
 setRandomBackground();
 
 
