@@ -21,7 +21,7 @@
     margin-left: 1%;
 }
 
-.header-buttons {
+.header-button-container{
     display: flex;
     align-items: center;
 }
@@ -36,20 +36,29 @@
     font-size: 14px;
     margin-right: 10px;
 }
-
+#sign-in{
+    margin-right: 10px;
+}
+#log-out{
+    margin-right: 10px;
+}
 .sign-in-button:hover {
     background-color: #0056b3;
 }
-.user-profile-button {
-    background-color: #ff0000;
+
+.header-button{
+    background-color: #fe5d5d;
     color: white;
-    border: none;
+    border: 1px solid rgb(200, 99, 99);
+    box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.2);
     padding: 5px 5px;
     font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
     font-family: MyCustomFont;
 }
+
+
 .log-out-button{
     background-color: #ff0000;
     color: white;

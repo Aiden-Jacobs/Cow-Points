@@ -44,13 +44,14 @@ export async function add_header_buttons(supabase_session) {
             // create the log out button when the user is logged in so that they can log out
             const logoutButton = document.createElement("button");
             logoutButton.textContent = "LOG OUT";
-            logoutButton.classList.add("log-out-button");
+            logoutButton.classList.add("header-button");
+            logoutButton.id = "log-out";
             logoutButton.onclick = async () => {
                 await supabase_session.auth.signOut();
                 window.location.reload();
             }
             // this adds the log out button to the header so that it is visible when the user is logged in
-            document.getElementById("header-buttons").appendChild(logoutButton);                
+            document.getElementById("header-button-container").appendChild(logoutButton);                
         }
     } catch (error) { 
         console.error("user not logged in");
