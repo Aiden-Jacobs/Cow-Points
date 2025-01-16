@@ -4,7 +4,7 @@
 
 #### **Overview**
 
-Welcome to **Cow Points**, a fun and engaging game where the goal is to collect as many "Cow Points" as possible. The only way to earn a Cow Point is to spot a cow either sitting down or standing up while you’re driving in a car. This web app serves as your ultimate tool to track your points, see where others have spotted cows, and compete on the leaderboard.
+Welcome to **Cow Points**, a fun and engaging game where the goal is to collect as many "Cow Points" as possible. The only way to earn a Cow Point is to spot a cow in the process of either sitting down or standing up while you’re driving in a car. This web app serves as your ultimate tool to track your points, see where others have spotted cows, and compete on the leaderboard.
 
 The web app is currently in beta and publicly available at [cowpoints.com](https://cowpoints.com). We welcome feedback to improve your experience. Thanks for playing Cow Points!
 
