@@ -26,23 +26,12 @@
             display: flex;
             justify-content: center;
         }
-        .dashboard-container {
-            background-color: #ff9090;
-            opacity: 0.9;
-            width: 80%;
-            padding: 20px;
-            display: grid;
-            grid-template-columns: 2fr 3fr;
-            grid-gap: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin-top: 7%;
-        }
         .section {
             background-color: #fff1de;
             border-radius: 10px;
             padding: 20px;
             text-align: center;
+            margin: 1%;
         }
 
         .section-title {
@@ -70,6 +59,18 @@
             margin: 5px 0;
             display: flex;
             justify-content: space-between;
+        }
+
+        /* user points section */
+        #user-points{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            column-fill: auto;
+        }
+        .internal-section {
+            padding-left: 1.5%;
+            padding-right: 1.5%;
         }
 
         .add-point-form input {
@@ -114,56 +115,113 @@
         #leaderboard-button {
             margin-right: 10px;
         }
+        .nav-bar {
+        position: relative;
+        width: 100%;
+        height: 50px;
+        z-index: 1000;
+        background-color: #ff000052;
+    }
+    .dashboard-container {
+        background-color: #ff9090;
+        opacity: 0.9;
+        width: 80%;
+        padding: 3%;
+        display: grid;
+        grid-template-columns: 1fr; 
+        grid-gap: 3%;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        margin-top: 7%;
+        margin-bottom: 2%;
+        display: flex;
+        flex-direction: column;
+    }
 
-        /* phone CSS */
-        @media screen and (max-width: 480px) {
-            body {
-                flex-direction: column;
-                align-items: stretch;
+    .dashboard-container nav {
+        width: 100%;
+        background-color: #fe5d5d;
+        border-radius: 5px;
+        padding: 10px 0;
+        text-align: center;
+    }
 
-            }
-            .leaderboard-button
-            {
-                font-size: 14px;
-                padding: 5px 10px;
-                margin-right: 30px;
-            }
-            main {
-                width: 100%;
-            }
+    .dashboard-container nav ul {
+        display: flex;
+        justify-content: center;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
 
-            .dashboard-container {
-                width: 90%;
-                grid-template-columns: 1fr;
-                padding: 10px;
-                margin-top: 55px;
-                display: grid;
-            }
-            .section {
-                padding: 15px;
-            }
-            .section-title {
-                font-size: 16px;
-            }
-            .main-stat {
-                font-size: 36px;
-            }
-            .friends-list li {
-                flex-direction: column;
-                text-align: left;
-            }
-            .add-point-form input {
-                width: calc(100% - 20px);
-                font-size: 14px;
-            }
-            .add-point-form button {
-                font-size: 14px;
-            }
-            #map {
-                height: 150px;
-            }
+    .dashboard-container nav ul li {
+        margin: 0 15px;
+    }
+
+    .dashboard-container nav ul li a {
+        text-decoration: none;
+        color: #fff;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .dashboard-container nav ul li a:hover {
+        background-color: #b34c4c;
+    }
+
+    /* phone CSS */
+    @media screen and (max-width: 480px) {
+        body {
+            flex-direction: column;
+            align-items: stretch;
 
         }
+        .leaderboard-button
+        {
+            font-size: 14px;
+            padding: 5px 10px;
+            margin-right: 30px;
+        }
+        main {
+            width: 100%;
+            margin-top: 30px;
+        }
+        .dashboard-container{
+            width: fit-content;
+            padding: 3%;
+            align-items: stretch;
+            flex-direction: column;
+        }
+        .section {
+            width: fit-content(80%);
+        } 
+        
+        .section-title {
+            font-size: 16px;
+        }
+        .main-stat {
+            font-size: 36px;
+        }
+        .friends-list li {
+            flex-direction: column;
+            text-align: left;
+        }
+        .add-point-form input {
+            width: calc(100% - 20px);
+            font-size: 14px;
+        }
+        .add-point-form button {
+            font-size: 14px;
+        }
+        #map {
+            height: 150px;
+        }
+
+    }
+   
+
     </style>
     <link rel="stylesheet" href="src/styles/Header.css">
     <!-- These links are for the map -->
@@ -184,49 +242,57 @@
         </a>
     </header>
     <main>
-        <!-- add a bar menu here to click in more detail each section ie. points, friends, etc. -->
-        <div class="dashboard-container">
-            <!-- Left Column -->
-            <div class="section">
-                <div class="section-title" id="Username">Username</div>
-                <div class="friends-list">
-                    <div class="section-title">Friends Leaderboard</div>
+             <div class="dashboard-container">
+                <!-- Navigation Bar -->
+                <nav>
                     <ul>
-                        <li><span>Not Done</span> <span>Yet</span></li>
-                        <!-- This will be populated by the JS with the user's friends -->
+                        <li><a href="#points">Points</a></li>
+                        <li><a href="#friends">Friends</a></li>
+                        <li><a href="#add-point">Add Point</a></li>
                     </ul>
+                </nav>
+                
+                <!-- friends section -->
+                <div class="section" id="friends">
+                    <div class="section-title" id="Username">Username</div>
+                    <div class="friends-list">
+                        <div class="section-title">Friends Leaderboard</div>
+                        <ul>
+                            <li><span>Not Done</span> <span>Yet</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <a href="add_friend.html">
+                            <button class="header-button">Add a Friend</button>
+                        </a>
+                    </div>
                 </div>
-                <div>
-                    <!-- add a friend button -->
-                    <a href="add_friend.html">
-                        <button class="leaderboard-button">Add a Friend</button>
-                    </a>
+            
+                <!-- user points section -->
+                <div class="section" id="user-points">
+                    <div class="internal-section">
+                        <div class="section-title">Lifetime Points</div>
+                        <div class="main-stat" id="userPoints">~</div>
+                    </div>
+                    <div class="internal-section">
+                        <div class="section-title">Leaderboard Position</div>
+                        <div class="main-stat" id="leaderboardPosition">#~</div>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Right Column -->
-            <div>
-                <div class="section">
-                    <div class="section-title">Lifetime Points</div>
-                    <div class="main-stat" id="userPoints">~</div>
+                <!-- add point section -->
+                <div class="section" id="add-point">
+                    <div>
+                        <div class="section-title">ADD POINT</div>
+                        <div id="map" style="width: 100%; height: 400px;"></div>
+                        <form class="add-point-form">
+                            <input type="text" placeholder="Location?" required id="location" readonly>
+                            <input type="datetime-local" placeholder="When?" required id="date">
+                            <input type="text" placeholder="Additional Info" required id="description">
+                            <button type="submit" id="submit">Submit</button>
+                        </form>
+                    </div>
                 </div>
-                <div class="section">
-                    <div class="section-title">Leaderboard Position</div>
-                    <div class="main-stat" id="leaderboardPosition">#~</div>
-                </div>
-                <div class="section">
-                    <div class="section-title">ADD POINT</div>
-                    <div id="map" style="width: 100%; height: 200px;"></div>
-                    <!-- Form to add a point -->
-                    <form class="add-point-form">
-                        <input type="text" placeholder="Location?" required id ="location" readonly>
-                        <input type="datetime-local" placeholder="When?" required id="date">
-                        <input type="text" placeholder="Additional Info" required id="description">
-                        <button type="submit" id="submit">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
+            </div>       
         <script type="module" src="src/pages/Dashboard.js"></script>
         <script src="src/pages/map_select.js"></script>
     </main>
