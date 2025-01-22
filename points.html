@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
+    <title>User Cow Points</title>
     <style>
         @font-face {
             font-family: 'MyCustomFont';
@@ -46,20 +46,6 @@
             margin: 20px 0;
         }
 
-        .friends-list {
-            text-align: left;
-        }
-
-        .friends-list ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .friends-list li {
-            margin: 5px 0;
-            display: flex;
-            justify-content: space-between;
-        }
 
         /* user points section */
         #user-points{
@@ -73,26 +59,7 @@
             padding-right: 1.5%;
         }
 
-        .add-point-form input {
-            display: block;
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin: 10px auto;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .add-point-form button {
-            padding: 10px 20px;
-            background-color: #888;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .add-point-form button:hover {
-            background-color: #555;
-        }
+
         .leaderboard-button {
             background-color: #ff0000;
             color: white;
@@ -204,17 +171,6 @@
         .main-stat {
             font-size: 36px;
         }
-        .friends-list li {
-            flex-direction: column;
-            text-align: left;
-        }
-        .add-point-form input {
-            width: calc(100% - 20px);
-            font-size: 14px;
-        }
-        .add-point-form button {
-            font-size: 14px;
-        }
         #map {
             height: 150px;
         }
@@ -236,7 +192,7 @@
 </head>
 <body>
     <header class="header">
-        <h1 class="header-title">Dashboard</h1>
+        <h1 class="header-title">Points</h1>
         <a href="index.html">
             <button class="header-button" id="leaderboard-button">Leaderboard</button>
         </a>
@@ -253,24 +209,7 @@
                         <li><a href="#add-point">Add Point</a></li>
                         <li><a href="user_settings.html">Settings</a></li>
                     </ul>
-                </nav>
-                
-                <!-- friends section -->
-                <div class="section" id="friends">
-                    <div class="section-title" id="Username">Username</div>
-                    <div class="friends-list">
-                        <div class="section-title">Friends Leaderboard</div>
-                        <ul>
-                            <li><span>Not Done</span> <span>Yet</span></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <a href="add_friend.html">
-                            <button class="header-button">Add a Friend</button>
-                        </a>
-                    </div>
-                </div>
-            
+                </nav>            
                 <!-- user points section -->
                 <div class="section" id="user-points">
                     <div class="internal-section">
@@ -282,19 +221,23 @@
                         <div class="main-stat" id="leaderboardPosition">#~</div>
                     </div>
                 </div>
-                <!-- add point section -->
+                <!-- map of points section -->
                 <div class="section" id="add-point">
                     <div>
-                        <div class="section-title">ADD POINT</div>
+                        <div class="section-title">Map of your points</div>
                         <div id="map" style="width: 100%; height: 400px;"></div>
-                        <form class="add-point-form">
-                            <input type="text" placeholder="Location?" required id="location" readonly>
-                            <input type="datetime-local" placeholder="When?" required id="date">
-                            <input type="text" placeholder="Additional Info" required id="description">
-                            <button type="submit" id="submit">Submit</button>
-                        </form>
                     </div>
                 </div>
+
+                <!-- list of points section -->
+                <!-- include an option to edit points. this will allow the user to change
+                  the location, date, and description of the point. the user will also be
+                  able to delete the point. -->
+                <div class="section" id="points-list">
+                    <div class="section-title">List of your points</div>
+                    <ul id="points-list-ul">
+                        <!-- <li>Point 1</li> -->
+                    </ul>
             </div>       
         <script type="module" src="src/pages/Dashboard.js"></script>
         <script src="src/pages/map_select.js"></script>
