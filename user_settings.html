@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <style>
+            .dashboard-container {
+                background-color: #ff9090;
+                opacity: 0.9;
+                width: 80%;
+                padding: 3%;
+                display: grid;
+                grid-template-columns: 1fr; 
+                grid-gap: 3%;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                margin-top: 7%;
+                margin-bottom: 2%;
+                display: flex;
+                flex-direction: column;
+            }
+        </style>
+        <link rel="stylesheet" href="src/styles/user-nav-bar.css">
+        <link rel="stylesheet" href="src/styles/Header.css">
+        <script src="src/components/user_nav_bar.js" type="module"></script>
+    </head>
+<body>
+    <header class="header">
+        <h1 class="header-title">Settings</h1>
+        <a href="index.html">
+            <button class="header-button" id="leaderboard-button">Leaderboard</button>
+        </a>
+    </header>
+    <main>
+             <div class="dashboard-container">
+                <!-- Navigation Bar -->
+                <!-- Need to make this mobile friendly -->
+                <user-nav-bar></user-nav-bar>        
+
+            </div>
+        </main>
+    </body>
+</html>
