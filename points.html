@@ -104,6 +104,13 @@
         display: flex;
         flex-direction: column;
     }
+    .Not_done {
+        font-size: 50px;
+        font-weight: bold;
+        color: #000000;
+        text-align: center;
+        margin-top: 20px;
+    }
 
     /* phone CSS */
     @media screen and (max-width: 480px) {
@@ -173,6 +180,8 @@
                 <!-- Need to make this mobile friendly -->
                 <user-nav-bar></user-nav-bar>        
                 <!-- user points section -->
+                 
+                <h1 class="Not_done"><span>Page In progress</span> <span></span></h1>
                 <div class="section" id="user-points">
                     <div class="internal-section">
                         <div class="section-title">Lifetime Points</div>
@@ -199,6 +208,7 @@
                     <div class="section-title">List of your points</div>
                     <ul id="points-list-ul">
                         <!-- <li>Point 1</li> -->
+                        <li><span>Not Done</span> <span>Yet</span></li>
                     </ul>
 				 </div>
             </div>       
