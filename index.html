@@ -67,6 +67,13 @@
             cursor: pointer;
             font-family: MyCustomFont;
         }
+
+        .scroll-container {
+            max-height: 80vh; /* Adjust this value as needed */
+            overflow-y: auto;
+
+
+        }
         @media screen and (max-width: 480px) {
             .leaderboard-container {
                 overflow: auto;
@@ -100,17 +107,23 @@
             <a href="map_leaderboard.html">
                 <button class="map-button">Map of Points</button></a>
         </div>
+        <div class="scroll-container">
         <table class="leaderboard-table">
             <thead>
+               
                 <tr>
                     <th>USERNAME</th>
                     <th>POINTS</th>
                 </tr>
+                
             </thead>
-            <tbody>
-                <!-- Leaderboard data will be dynamically populated here -->
-            </tbody>
+            
+                <tbody>
+                    <!-- Leaderboard data will be dynamically populated here -->
+                </tbody>
+            
         </table>
+    </div>
     </div>
 </body>
 </html>
