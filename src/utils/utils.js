@@ -17,6 +17,7 @@ export function setRandomBackground() {
         '../../Assets/Art/jpg/rainbow_cow1.jpg',
         '../../Assets/Art/jpg/rainbow_cow2.jpg',
         '../../Assets/Art/jpg/Tile_cow2.jpg',
+        '../../Assets/Art/jpg/cows_in_the_planes.png',
         '../../Assets/Art/jpg/Tile_cow1.jpg',
     ];
     const randomIndex = Math.floor(Math.random() * backgroundImages.length);
