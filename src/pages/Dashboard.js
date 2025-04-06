@@ -10,6 +10,7 @@ const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const session = await _supabase.auth.getSession();
 const uuid = session.data.session.user.id;
 
+
 /**
  * fetches the users id number from the database this is not the same as the uuid
  * @param {string} input_uuid
@@ -49,6 +50,35 @@ async function fetchUserPoints(userId) {
     }
     return data.num_points;
 }
+
+/**
+ * this function fetches the users points count from the database
+ * @param {string} userId
+ * @returns {string} the number of points the user has
+ * @returns {void} if there is an error
+ */
+async function fetchUserPointsCount(userId) {
+    const { data, error } = await _supabase
+        .from('Points')
+        .select('*')
+        .eq('user', parseInt(userId));
+    if (error) {
+        console.error('Error fetching user points count:', error);
+        return;
+    }
+    var point_count = data.length;
+    // check to see if the there are any points where admin_approved is true false
+    const approvedPoints = data.filter(point => point.admin_approved == true);
+    if (approvedPoints.length != point_count) {
+        // after we have checked if the user has any points that are not approved we can indicate that to the user in the return value
+        document.getElementById('not-approved-message').textContent = '* points not yet approved';
+        return String(point_count) + "*";
+    }
+
+    return String(data.length);
+}
+
+
 
 /**
  * this function fetches the users position in the leaderboard
@@ -95,7 +125,7 @@ function set_leaderboard_position(position) {
 const userData = await getUserId(uuid);
 const id = userData.id;
 document.getElementById('Username').textContent = userData.username;
-document.getElementById('userPoints').textContent = await fetchUserPoints(id)
+document.getElementById('userPoints').textContent = await fetchUserPointsCount(id)
 set_leaderboard_position(await fetchLeaderboardPosition(id));
 
 
