@@ -43,7 +43,7 @@ The web app is currently in beta and publicly available at [cowpoints.com](https
 - **`user_dashboard.html`**: Dashboard for managing Cow Points.
 
 ### Assets
-- **Art**: Fun pixel cow-themed images in various formats (JPG, PNG, SVG).
+- **Art**: Fun pixel cow-themed images in various formats (GIF, JPG, PNG, SVG).
 - **Fonts**: Custom pixel art fonts for a retro gaming aesthetic.
 
 ### Source Code
