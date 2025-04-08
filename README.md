@@ -36,7 +36,7 @@ The web app is currently in beta and publicly available at [cowpoints.com](https
 
 ## File Structure
 ### Key HTML Files
-- **`index.html`**: Main entry point featuring the leaderboard.
+- **`index.html`**: Main entry point featuring the leaderboard and rules.
 - **`map_leaderboard.html`**: Displays the map with player sightings.
 - **`sign_in.html`**: User sign-in page.
 - **`sign_up.html`**: User registration page.
