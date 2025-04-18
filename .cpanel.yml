@@ -1,7 +1,7 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/example/public_html/
+    - export DEPLOYPATH=/home/cowpqapv/public_html/
     - echo "Deploying to $DEPLOY_PATH"
     - /bin/rm -rf $DEPLOY_PATH/*
     - /bin/cp -R * $DEPLOY_PATH/
