@@ -2,5 +2,7 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/example/public_html/
-    - /bin/cp -R images $DEPLOYPATH
-    - echo "Deployment triggered on $(date)" >> ~/deployment.log
+    - echo "Deploying to $DEPLOY_PATH"
+    - /bin/rm -rf $DEPLOY_PATH/*
+    - /bin/cp -R * $DEPLOY_PATH/
+    - echo "Deployment complete."
