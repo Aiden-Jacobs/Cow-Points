@@ -1,129 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard</title>
-    <style>
-        @font-face {
-            font-family: 'MyCustomFont';
-            src: url('Assets/Fonts/PixeloidMono-d94EV.ttf') format('truetype');
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Leaderboard</title>
+  <style>
+    @font-face {
+      font-family: 'MyCustomFont';
+      src: url('Assets/Fonts/PixeloidMono-d94EV.ttf') format('truetype');
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        a {
-            text-decoration: none;
-        }   
-        .leaderboard-container {
-            background-color: rgba(128, 128, 128, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            width: 400px;
-            overflow: auto;
-        }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
+    a {
+      text-decoration: none;
+    }
+
+    .leaderboard-container {
+      background-color: rgba(128, 128, 128, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      /* width: 400px; */
+      height: 80vh;
+      max-width: 60%;
+      overflow: auto;
+      margin-top: 1%;
+    }
+
+    .leaderboard-title {
+      font-family: 'MyCustomFont', Arial, sans-serif;
+      font-size: 36px;
+      color: red;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .leaderboard-table {
+      font-family: 'MyCustomFont', Arial, sans-serif;
+      width: 100%;
+      color: red;
+      font-size: 20px;
+      text-align: left;
+      margin-top: 10px;
+    }
+
+    .leaderboard-table th {
+      text-align: left;
+      color: blue;
+    }
+
+    .leaderboard-table td {
+      padding: 5px;
+    }
+
+    .map-button {
+      background-color: #007bffc5;
+      color: white;
+      border: none;
+      padding: 5px 5px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: MyCustomFont;
+    }
+
+    .scroll-container {
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    @media screen and (max-width: 480px) {
+      .leaderboard-container {
+        overflow: auto;
+        width: 100%;
+      }
         .leaderboard-title {
-            font-family: 'MyCustomFont', Arial, sans-serif;
-            font-size: 36px;
-            color: red;
-            font-weight: bold;
-            margin-bottom: 20px;
+            font-size: 24px;
         }
-
         .leaderboard-table {
-            font-family: 'MyCustomFont', Arial, sans-serif;
-            width: 100%;
-            color: red;
-            font-size: 20px;
-            text-align: left;
-            margin-top: 10px;
-        }
-
-        .leaderboard-table th {
-            text-align: left;
-            color: blue;
-        }
-
-        .leaderboard-table td {
-            padding: 5px;
-        }
-        .map-button {
-            background-color: #007bffc5;
-            color: white;
-            border: none;
-            padding: 5px 5px;
             font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: MyCustomFont;
         }
 
-        .scroll-container {
-            max-height: 80vh; /* Adjust this value as needed */
-            overflow-y: auto;
+    }
 
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+    }
 
-        }
-        @media screen and (max-width: 480px) {
-            .leaderboard-container {
-                overflow: auto;
-                width: 80%;
-            }
-        }
+    .modal-content {
+      position: relative;
+      background-color: (255, 255, 255, 0.5);
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 90%;
+      max-height: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
 
-    </style>
-    <!-- Header CSS -->
-    <link rel="stylesheet" href="src/styles/Header.css">
+    .modal-content img {
+      max-width: 100%;
+      max-height: 80vh;
+      margin: 0 auto;
+    }
 
-    <script type="module" src="src/pages/main.js"></script>
+    .close-button {
+      font-size: 20px;
+      font-weight: bold;
+      background: red;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      align-self: flex-end;
+    }
+  </style>
+
+  <!-- Header CSS -->
+  <link rel="stylesheet" href="src/styles/Header.css" />
+  <script type="module" src="src/pages/main.js"></script>
 </head>
+
 <body>
-    <header class="header">
-        <h1 class="header-title">LEADERBOARD</h1>
-        <!-- Header buttons -->
-        <div id="header-button-container">
-            <a href="sign_in.html" id="sign-in-link">
-                <button class="header-button" id="sign-in">Sign In</button>
-            </a>
-        </div>
-    </header>
-
-
-
-    <!-- Leaderboard -->
-    <div class="leaderboard-container">
-        <div class="leaderboard-title">LEADERBOARD <img src="Assets/Art/gif/stand.gif" alt="Leaderboard" style="width: 10%; height: auto; margin-top: 20px; border-radius: 10px;"></div>
-        <div >
-            <a href="map_leaderboard.html">
-                <button class="map-button">Map of Points</button></a>
-        </div>
-        <div class="scroll-container">
-            <table class="leaderboard-table">
-                <thead>
-                
-                    <tr>
-                        <th>USERNAME</th>
-                        <th>POINTS</th>
-                    </tr>
-                    
-                </thead>
-                
-                    <tbody>
-                        <!-- Leaderboard data will be dynamically populated here -->
-                    </tbody>
-                
-            </table>
-        </div>        
+  <header class="header">
+    <h1 class="header-title">LEADERBOARD</h1>
+    <div id="header-button-container">
+      <a href="sign_in.html" id="sign-in-link">
+        <button class="header-button" id="sign-in">Sign In</button>
+      </a>
     </div>
+  </header>
+
+  <div class="leaderboard-container">
+    <div class="leaderboard-title">
+      LEADERBOARD 
+      <img src="Assets/Art/gif/stand.gif" alt="Leaderboard" style="width: 10%; height: auto; margin-top: 20px; border-radius: 10px;" />
+    </div>
+
+    <div>
+        <button class="map-button" id="rules-button">RULES</button>
+      <a href="map_leaderboard.html">
+        <button class="map-button">Map of Points</button>
+      </a>
+    </div>
+
+    <div class="scroll-container">
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>USERNAME</th>
+            <th>POINTS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Leaderboard data will be dynamically populated here -->
+        </tbody>
+      </table>
+    </div>
+
+    
+  </div>
+
+  <!-- Rules Modal -->
+  <div class="modal" id="rules-modal">
+    <div class="modal-content">
+      <button class="close-button" id="close-modal">X</button>
+      <img src="Assets/Art/PNG/rules.png" alt="Rules" />
+    </div>
+  </div>
+
 </body>
 </html>

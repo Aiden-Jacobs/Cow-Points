@@ -31,9 +31,33 @@ async function fetchLeaderboard() {
         leaderboardTableBody.appendChild(row);
     });
 }
+
+// add rules popup button functionality
+function addRulesPopup() {
+    const rulesButton = document.getElementById('rules-button');
+    const rulesModal = document.getElementById('rules-modal');
+    const closeModal = document.getElementById('close-modal');
+
+    rulesButton.addEventListener('click', () => {
+      rulesModal.style.display = 'flex';
+    });
+
+    closeModal.addEventListener('click', () => {
+      rulesModal.style.display = 'none';
+    });
+
+    // Close modal on outside click
+    window.addEventListener('click', (e) => {
+      if (e.target === rulesModal) {
+        rulesModal.style.display = 'none';
+      }
+    });
+}
 // Set random background image
 setRandomBackground();
 // Fetches the leaderboard data and populates the leaderboard table
 fetchLeaderboard();
 // Add header buttons
 add_header_buttons(_supabase);
+// Add rules popup button functionality
+addRulesPopup();
