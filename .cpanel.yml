@@ -1,7 +1,5 @@
+---
 deployment:
   tasks:
-    - export DEPLOY_PATH=/home/example/public_html/
-    - echo "Deploying to $DEPLOY_PATH"
-    - /bin/rm -rf $DEPLOY_PATH/*
-    - /bin/cp -R * $DEPLOY_PATH/
-    - echo "Deployment complete."
+    - export DEPLOYPATH=/home/example/public_html/
+    - /bin/cp -R images $DEPLOYPATH
