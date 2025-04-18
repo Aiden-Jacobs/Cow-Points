@@ -57,4 +57,18 @@ export async function add_header_buttons(supabase_session) {
     } catch (error) { 
         console.error("user not logged in");
     }
+    // print the url to the console so that it can be used for debugging
+    console.log("url", window.location.href);
+    if (window.location.href.includes("rules.html")) {
+        // add buttons to the rules page to navigate to the the leaderboard
+        const leaderboardButton = document.createElement("button");
+        leaderboardButton.textContent = "Leaderboard";
+        leaderboardButton.classList.add("header-button");
+        leaderboardButton.id = "leaderboard-button";
+        leaderboardButton.onclick = () => {
+            window.location.href = "index.html";
+        }
+        // this adds the leaderboard button to the header so that it is visible when the user is logged in
+        document.getElementById("header-button-container").appendChild(leaderboardButton);
+    }
 }

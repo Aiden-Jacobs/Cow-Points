@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <style>
+        @font-face {
+            font-family: 'MyCustomFont';
+            src: url('Assets/Fonts/PixeloidMono-d94EV.ttf') format('truetype');
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        a {
+            text-decoration: none;
+        }   
+        .map-button {
+            background-color: #007bffc5;
+            color: white;
+            border: none;
+            padding: 5px 5px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: MyCustomFont;
+        }
+
+        #rules-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 85vh;
+
+        }
+        #rules-image {
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        @media screen and (max-width: 480px) {
+
+        }
+
+    </style>
+    <!-- Header CSS -->
+    <link rel="stylesheet" href="src/styles/Header.css">
+
+    <script type="module" src="src/pages/main.js"></script>
+</head>
+<body>
+    <header class="header">
+        <h1 class="header-title">RULES</h1>
+        <!-- Header buttons -->
+        <div id="header-button-container">
+            <a href="sign_in.html" id="sign-in-link">
+                <button class="header-button" id="sign-in">Sign In</button>
+            </a>
+        </div>
+    </header>
+
+
+    <!-- add an image -->
+
+    <div id="rules-container">
+        <img src="Assets/Art/PNG/rules.png" alt="Rules" id="rules-image">
+    </div>
+
+    <!-- Leaderboard -->
+    <!-- <div class="leaderboard-container">
+        <div class="leaderboard-title">LEADERBOARD <img src="Assets/Art/gif/stand.gif" alt="Leaderboard" style="width: 10%; height: auto; margin-top: 20px; border-radius: 10px;"></div>
+        <div >
+            <a href="map_leaderboard.html">
+                <button class="map-button">Map of Points</button></a>
+        </div>
+        <div class="scroll-container">
+            <table class="leaderboard-table">
+                <thead>
+                
+                    <tr>
+                        <th>USERNAME</th>
+                        <th>POINTS</th>
+                    </tr>
+                    
+                </thead>
+                
+                    <tbody>
+                         Leaderboard data will be dynamically populated here 
+                    </tbody>
+                
+            </table>
+        </div>-->        
+    </div> 
+</body>
+</html>
