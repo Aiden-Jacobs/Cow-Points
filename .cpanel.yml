@@ -3,5 +3,5 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/cowpqapv/public_html/
     - echo "Deploying to $DEPLOY_PATH"
-    - /bin/cp /home/cowpqaqv/repositories/Cow-Points/index.html $DEPLOYPATH
+    - /bin/cp -R * $DEPLOY_PATH/
     - echo "Deployment complete."
