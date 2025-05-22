@@ -114,7 +114,7 @@ async function fetchLeaderboardPosition(uuid) {
  */
 function set_leaderboard_position(position) {
     if (position > 0) {
-        console.log('Leaderboard Position:', position);
+        // console.log('Leaderboard Position:', position);
         document.getElementById('leaderboardPosition').textContent = "#"+position;
     } else {
         console.error('User not found in leaderboard');
