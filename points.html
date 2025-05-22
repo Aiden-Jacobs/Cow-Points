@@ -104,6 +104,10 @@
         display: flex;
         flex-direction: column;
     }
+    #points-list {
+        align-items: start;
+        
+    }
     .Not_done {
         font-size: 50px;
         font-weight: bold;
@@ -181,7 +185,7 @@
                 <user-nav-bar></user-nav-bar>        
                 <!-- user points section -->
                  
-                <h1 class="Not_done"><span>Page In progress</span> <span></span></h1>
+                <!-- <h1 class="Not_done"><span>Page In progress</span> <span></span></h1> -->
                 <div class="section" id="user-points">
                     <div class="internal-section">
                         <div class="section-title">Lifetime Points</div>
@@ -193,6 +197,7 @@
                     </div>
                 </div>
                 <!-- map of points section -->
+                <!-- include a map that shows the location of all the users points. -->
                 <div class="section" id="add-point">
                     <div>
                         <div class="section-title">Map of your points</div>
@@ -212,8 +217,9 @@
                     </ul>
 				 </div>
             </div>       
-        <script type="module" src="src/pages/Dashboard.js"></script>
-        <script src="src/pages/map_select.js"></script>
+        <script type="module" src="src/pages/points_page.js"></script>
+
+        <!-- <script src="src/pages/map_select.js"></script> -->
     </main>
 </body>
 </html>

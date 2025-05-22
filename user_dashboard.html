@@ -73,14 +73,6 @@
             padding-right: 1.5%;
         }
 
-        .add-point-form input {
-            display: block;
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin: 10px auto;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
         .add-point-form button {
             padding: 10px 20px;
             background-color: #888;
@@ -89,9 +81,6 @@
             border-radius: 5px;
             cursor: pointer;
             margin-top: 10px;
-        }
-        .add-point-form button:hover {
-            background-color: #555;
         }
         .leaderboard-button {
             background-color: #ff0000;
@@ -121,22 +110,71 @@
         height: 50px;
         z-index: 1000;
         background-color: #ff000052;
-    }
-    .dashboard-container {
-        background-color: #ff9090;
-        opacity: 0.9;
-        width: 80%;
-        padding: 3%;
-        display: grid;
-        grid-template-columns: 1fr; 
-        grid-gap: 3%;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        margin-top: 7%;
-        margin-bottom: 2%;
+        }
+        .dashboard-container {
+            background-color: #ff9090;
+            opacity: 0.9;
+            width: 80%;
+            padding: 3%;
+            display: grid;
+            grid-template-columns: 1fr; 
+            grid-gap: 3%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-top: 7%;
+            margin-bottom: 2%;
+            display: flex;
+            flex-direction: column;
+        }
+        .add-point-form {
         display: flex;
         flex-direction: column;
-    }
+        align-items: flex-start;
+        width: 100%;
+        margin-top: 20px;
+        border: #c35f5f 3px solid;
+        border-radius: 6px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        }
+
+        .form-title {
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .add-point-form label {
+        font-size: 13px;
+        text-align: left;
+        width: 100%;
+        margin-left: 10px;
+        }
+
+        .add-point-form input {
+            display: block;
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .add-point-form button {
+        align-self: center;
+        margin-top: 15px;
+        background-color: #f47878;
+        box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.2);
+        }
+        .add-point-form button:hover {
+            background-color: #c35f5f
+        }
+        #submission-status {
+            align-self: center;
+            font-size: 14px;
+        }
+
 
     /* phone CSS */
     @media screen and (max-width: 480px) {
@@ -181,6 +219,11 @@
         }
         .add-point-form button {
             font-size: 14px;
+            background-color: #f47878;
+            box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.2);
+        }
+        .add-point-form button:hover {
+            background-color: #c35f5f
         }
         #map {
             height: 150px;
@@ -251,10 +294,18 @@
                         <div class="section-title">ADD POINT</div>
                         <div id="map" style="width: 100%; height: 400px;"></div>
                         <form class="add-point-form">
-                            <input type="text" placeholder="Location?" required id="location" readonly>
+                            <div class="form-title">Add Point</div>
+                            <div id="submission-status" style="color: green; font-weight: bold; text-align: center;"></div>
+                            <label for="location">Location:</label>
+                            <input type="text" placeholder="(Click on map)" required id="location" readonly>
+
+                            <label for="date">Date and Time:</label>
                             <input type="datetime-local" placeholder="When?" required id="date">
+
+                            <label for="description">Description:</label>
                             <input type="text" placeholder="Additional Info" required id="description">
                             <button type="submit" id="submit">Submit</button>
+                            
                         </form>
                     </div>
                 </div>

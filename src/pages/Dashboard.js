@@ -88,7 +88,8 @@ async function fetchUserPointsCount(userId) {
  */
 async function fetchLeaderboardPosition(uuid) {
     try {
-        // Fetch all users sorted by num_points in descending order so that the user's position can be found
+        // Fetch all users sorted by num_points in descending order so that the 
+        // user's position can be found
         const { data: leaderboard, error } = await _supabase
             .from('Total_points')
             .select('id, num_points')
@@ -113,7 +114,7 @@ async function fetchLeaderboardPosition(uuid) {
  */
 function set_leaderboard_position(position) {
     if (position > 0) {
-        console.log('Leaderboard Position:', position);
+        // console.log('Leaderboard Position:', position);
         document.getElementById('leaderboardPosition').textContent = "#"+position;
     } else {
         console.error('User not found in leaderboard');
@@ -129,35 +130,54 @@ document.getElementById('userPoints').textContent = await fetchUserPointsCount(i
 set_leaderboard_position(await fetchLeaderboardPosition(id));
 
 
-// submits a point to the database
-document.getElementById('submit').addEventListener('click', async (e) => {
+document.querySelector('.add-point-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    // Get the values from the form fields so that they can be inserted into the database
-    const location = document.getElementById('location').value;
-    const lat = location.split(',')[0];
-    const lng = location.split(',')[1];
-    const description = document.getElementById('description').value;
+
+    // Get the values from the form fields so that they can be inserted
+    // into the database
+    const location = document.getElementById('location').value.trim();
+    const description = document.getElementById('description').value.trim();
     const date = document.getElementById('date').value;
-    // Check if the user wants to submit the point
-    if (!confirm('Are you sure you want to submit this point?')) {
+
+    // check to see if the user has filled in all the fields before 
+    // submitting if not it prompts the user to fill in all the fields
+    // so that the form can be submitted without errors
+    if (!location || !description || !date) {
+        alert("Please fill in all fields before submitting.");
         return;
     }
-    // Insert the new point into the Points table
-    // on the backend, the database will automatically add a point to the user's total points
+
+    // we split the location into lat and lng so that the can be
+    // inserted into their respective columns in the database
+    const [lat, lng] = location.split(',').map(s => s.trim());
+
+    console.log('Location:', lat, lng, 'Description:', description, 'Date:', date, 'User ID:', id);
+    if (!confirm('Are you sure you want to submit this point?\n' + `Location: ${lat},
+         ${lng}\nDescription: ${description}\nDate: ${date}`)) {
+        return;
+    }
+
     const { data, error } = await _supabase
         .from('Points')
-        .insert([
-            { lat, lng, description, date_and_time: date, user: id }
-        ]);
+        .insert([{ lat, lng, description, date_and_time: date, user: id }]);
+
     if (error) {
-        console.error('Error inserting task:', error.message);
+        alert("Submission failed. Please try again.");
+        console.error('Error inserting point:', error.message);
         return;
     }
-    alert('Task added successfully!');
-    // Clear the form fields
+
+    // Show clear success feedback
+    alert('Point submitted successfully and is pending approval.');
+
+    // Update the points count immediately without full page reload so
+    // the user can see the change immediately
+    const updatedPoints = await fetchUserPointsCount(id);
+    document.getElementById('userPoints').textContent = updatedPoints;
+    document.getElementById('submission-status').textContent = "Point submitted and pending approval.";
+
+    // Clear form fields
     document.getElementById('location').value = '';
     document.getElementById('description').value = '';
     document.getElementById('date').value = '';
-    document.getElementById('location').focus();
-    window.location.href = `user_dashboard.html`;
 });
