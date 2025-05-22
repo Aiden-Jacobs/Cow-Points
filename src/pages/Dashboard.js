@@ -174,6 +174,7 @@ document.querySelector('.add-point-form').addEventListener('submit', async (e) =
     // the user can see the change immediately
     const updatedPoints = await fetchUserPointsCount(id);
     document.getElementById('userPoints').textContent = updatedPoints;
+    document.getElementById('submission-status').textContent = "Point submitted and pending approval.";
 
     // Clear form fields
     document.getElementById('location').value = '';
