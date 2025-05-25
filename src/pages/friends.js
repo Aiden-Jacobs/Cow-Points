@@ -77,19 +77,35 @@ async function renderFriendsList() {
 async function renderFriendsLeaderboard() {
     try {
         const leaderboard = await createFriendLeaderboard(userId);
-        const ul = document.getElementById('friend-leaderboard-ul');
-        ul.innerHTML = '';
+        const table = document.getElementById('friend-leaderboard-table');
+        // table.innerHTML = '';
+
+
+
+        // Create table body
+        const tbody = document.createElement('tbody');
 
         leaderboard.forEach(friend => {
-            const li = document.createElement('li');
-            li.textContent = `${friend.username}: ${friend.points} points`;
-            ul.appendChild(li);
+            const row = document.createElement('tr');
+
+            const usernameCell = document.createElement('td');
+            usernameCell.textContent = friend.username;
+
+            const pointsCell = document.createElement('td');
+            pointsCell.textContent = friend.points;
+
+            row.appendChild(usernameCell);
+            row.appendChild(pointsCell);
+            tbody.appendChild(row);
         });
+
+        table.appendChild(tbody);
     } catch (err) {
         console.error(err);
         // alert('Failed to load friends leaderboard.');
     }
 }
+
 renderFriendsLeaderboard(userId);
 renderFriendsList();  
 displayPendingRequests();
