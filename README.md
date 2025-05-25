@@ -66,6 +66,7 @@ The backend uses the following table structure in Supabase:
     - `description` (text): Optional description of the sighting.
     - `user` (bigint): User ID who logged the sighting.
     - `admin_approved` (bool): if the point was approved
+    - `friend_approved` (bool): if the point was approved by a friend
 
 - **Total Points Table**
   - Keeps track of total Cow Points collected by each user.
