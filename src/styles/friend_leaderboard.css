@@ -14,6 +14,9 @@
     }
     .friend-leaderboard td {
         color: red;
+        text-align: left;
+        padding-left: 10px;
+        padding-right: 10px;
     }
     #friends{
         
