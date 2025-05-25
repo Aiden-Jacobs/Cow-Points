@@ -4,7 +4,8 @@ import {
     acceptFriendRequest,
     listFriends,
     getPendingFriendRequests,
-    createFriendLeaderboard
+    createFriendLeaderboard,
+    renderFriendsLeaderboard
   } from '../services/friendService.js';
 import { getUserId } from '../services/userService.js';
 setRandomBackground();
@@ -74,37 +75,7 @@ async function renderFriendsList() {
     }
 }
 
-async function renderFriendsLeaderboard() {
-    try {
-        const leaderboard = await createFriendLeaderboard(userId);
-        const table = document.getElementById('friend-leaderboard-table');
-        // table.innerHTML = '';
 
-
-
-        // Create table body
-        const tbody = document.createElement('tbody');
-
-        leaderboard.forEach(friend => {
-            const row = document.createElement('tr');
-
-            const usernameCell = document.createElement('td');
-            usernameCell.textContent = friend.username;
-
-            const pointsCell = document.createElement('td');
-            pointsCell.textContent = friend.points;
-
-            row.appendChild(usernameCell);
-            row.appendChild(pointsCell);
-            tbody.appendChild(row);
-        });
-
-        table.appendChild(tbody);
-    } catch (err) {
-        console.error(err);
-        // alert('Failed to load friends leaderboard.');
-    }
-}
 
 renderFriendsLeaderboard(userId);
 renderFriendsList();  

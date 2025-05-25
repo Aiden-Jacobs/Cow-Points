@@ -139,4 +139,68 @@ export async function getPendingFriendRequests(currentUserId) {
     return users; // Returns array of { id, username }
 }
 
+// Render friends leaderboard
+/**
+ * this function renders the friends leaderboard for the current user
+ * @param {string} userId - The ID of the current user
+ * @returns {void} - If there is an error, it will log the error to the console
+ * */
+export async function renderFriendsLeaderboard(userId) {
+    try {
+        const leaderboard = await createFriendLeaderboard(userId);
+        const div = document.getElementById('friends-leaderboard-container');
+        if (!div) {
+            console.error('Friends leaderboard container not found.');
+            return;
+        }
 
+        // add section title for friends leaderboard
+        const sectionTitle = document.createElement('div');
+        sectionTitle.className = 'section-title';
+        sectionTitle.textContent = 'Friends Leaderboard';
+        div.appendChild(sectionTitle); // Append the section title
+
+        // Clear previous content and create a new table
+        const table = document.createElement('table');
+        table.id = 'friends-leaderboard-table';
+        table.innerHTML = '';
+
+        // Create table headers
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        const usernameHeader = document.createElement('th');
+        usernameHeader.textContent = 'USERNAME';
+        const pointsHeader = document.createElement('th');
+        pointsHeader.textContent = 'POINTS';
+        headerRow.appendChild(usernameHeader);
+        headerRow.appendChild(pointsHeader);
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+        // div.innerHTML = ''; // Clear previous content
+        
+        div.appendChild(table); // Append the new table
+
+        // Create table body
+        const tbody = document.createElement('tbody');
+        var i = 1; // Initialize a counter for ranking
+        leaderboard.forEach(friend => {
+            const row = document.createElement('tr');
+
+            const usernameCell = document.createElement('td');
+            usernameCell.textContent = i+". "+friend.username;
+
+            const pointsCell = document.createElement('td');
+            pointsCell.textContent = friend.points;
+            
+            row.appendChild(usernameCell);
+            row.appendChild(pointsCell);
+            tbody.appendChild(row);
+            i++; // Increment the counter for the next row
+        });
+
+        table.appendChild(tbody);
+    } catch (err) {
+        console.error(err);
+        // alert('Failed to load friends leaderboard.');
+    }
+}

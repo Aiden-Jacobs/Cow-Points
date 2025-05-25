@@ -1,0 +1,29 @@
+.friend-leaderboard-table {
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #ae782d;
+    border-radius: 10px;
+    padding: 10px;
+    }
+    /* add spacing to the table column titles */
+    .friend-leaderboard th {
+        padding: 10px;
+        text-align: left;
+        color: blue;
+    }
+    .friend-leaderboard td {
+        color: red;
+    }
+    #friends{
+        
+        justify-content: center;
+        align-items: center;
+        column-fill: auto;
+    }
+    .friend-leaderboard {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 10px;
+    }
