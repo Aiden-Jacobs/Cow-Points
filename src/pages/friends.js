@@ -5,7 +5,8 @@ import {
     listFriends,
     getPendingFriendRequests,
     createFriendLeaderboard,
-    renderFriendsLeaderboard
+    renderFriendsLeaderboard,
+    getUsernameFromId
   } from '../services/friendService.js';
 import { getUserId } from '../services/userService.js';
 setRandomBackground();
@@ -58,9 +59,8 @@ document.getElementById('add-friend-form').addEventListener('submit', async (e) 
 }
 
 
-async function renderFriendsList() {
+async function renderFriendsList(friends) {
     try {
-        const friends = await listFriends(userId.id);
         const ul = document.getElementById('friend-list-ul');
         ul.innerHTML = '';
 
@@ -75,8 +75,53 @@ async function renderFriendsList() {
     }
 }
 
+async function prepMapPoints(friends){
+    console.log('Preparing map points for friends:', friends);
+    const list_of_friend_ids = friends.map(friend => friend.id);
+    list_of_friend_ids.push(userId.id); // Include the current user ID
+    console.log('List of friend IDs:', list_of_friend_ids);
+    // Fetch user points
+    const { data: points, error: pointsError } = await _supabase
+        .from('Points')
+        .select('*')
+        .in('user', list_of_friend_ids)
+        .eq('friend_approved', true);
+
+    if (pointsError) {
+        console.error('Error fetching points:', pointsError);
+    }
+    return points;
+}
+
+function renderMapPoints(points, friends) {
+    console.log('Rendering map points:', points);
+    // Update map with points
+    if (L.DomUtil.get('map') != null) {
+        L.DomUtil.get('map')._leaflet_id = null;
+    }
+    const map = L.map('map').setView([0, 0], 3);
+    
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    }).addTo(map);
+
+    points.forEach(point => {
+    const marker = L.marker([point.lat, point.lng]).addTo(map);
+    marker.bindPopup(`<h2>${getUsernameFromId(point.id, friends)}</h2><b>${point.description}</b><br>${new Date(point.date_and_time).toLocaleString()}`);
+    });
+
+    if (points.length > 0) {
+    map.setView([points[0].lat, points[0].lng], 3);
+    }
+}
+
+const friends = await listFriends(userId.id);
 
 
 renderFriendsLeaderboard(userId);
-renderFriendsList();  
+renderFriendsList(friends);
+const friendPointsForMap = await prepMapPoints(friends);
+await renderMapPoints(friendPointsForMap,friends);
 displayPendingRequests();
+
