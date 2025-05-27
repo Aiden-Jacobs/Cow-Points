@@ -79,21 +79,20 @@ export async function listFriends(currentUserId) {
 
 // create friend leaderboard
 export async function createFriendLeaderboard(currentUser) {
-    console.log('currentUser in l', currentUser);
     const friends = await listFriends(currentUser.id);
     // add the current user to the friends list so that they can be displayed in the leaderboard
     friends.push({ username: currentUser.username, id: currentUser.id });
-    console.log('friends', friends);
+    // console.log('friends', friends);
 
     // for each friend, get their points and add them to leaderboard
     for (const friend of friends) {
-        console.log('friend', friend);
+        // console.log('friend', friend);
         const { data, error } = await _supabase
             .from('Points')
             .select('id, lat, lng, date_and_time, friend_approved')
             .eq('user', friend.id);
         if (data) {
-            const approvedPoints = data.filter(point => point.friend_approved == true);
+            const approvedPoints = data.filter(point => (point.friend_approved == true));
             friend.points = approvedPoints.length;
         } else {
             friend.points = 0;
@@ -203,4 +202,23 @@ export async function renderFriendsLeaderboard(userId) {
         console.error(err);
         // alert('Failed to load friends leaderboard.');
     }
+}
+// Fetch user username by id
+/**
+ * this function fetches the username of a user by their ID
+* @param {string} userId - The ID of the user
+* @param {Array} friends - An array of friend objects containing their usernames and IDs
+* @returns {string} - The username of the user with the given ID
+* @throws {Error} - If the user is not found in the friends list
+*/
+export async function getUsernameFromId(userId, friends) {
+    console.log('Fetching username for userId:', userId);
+    console.log('friends', friends);
+    console.log('username', friends.find(friend => friend.id === userId)?.username);
+    
+    const username = await friends.find(friend => friend.id === userId)?.username;
+    if (!username) {
+        throw new Error('User not found');
+    }
+    return username
 }
