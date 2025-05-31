@@ -47,7 +47,22 @@ document.getElementById('add-friend-form').addEventListener('submit', async (e) 
 
             const acceptBtn = document.createElement('button');
             acceptBtn.textContent = 'Accept';
-            acceptBtn.onclick = () => acceptFriendRequest(userId.id, req.id);
+            acceptBtn.onclick = async () => {
+                try {
+                    await acceptFriendRequest(userId.id, req.id);
+                    alert(`Friend request from ${req.username} accepted!`);
+                    li.remove(); // Remove the request from the list
+                    // Re-render the friends list and leaderboard
+                    // and map points
+                    const list_of_friend = await listFriends(userId.id);
+                    renderFriendsList(list_of_friend);
+                    renderFriendsLeaderboard(userId);
+                    const friendPointsForMap = await prepMapPoints(list_of_friend);
+                    await renderMapPoints(friendPointsForMap, list_of_friend);
+                } catch (err) {
+                    alert(`Failed to accept friend request: ${err.message}`);
+                }
+            };
 
             li.appendChild(acceptBtn);
             ul.appendChild(li);
