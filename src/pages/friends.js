@@ -76,10 +76,10 @@ async function renderFriendsList(friends) {
 }
 
 async function prepMapPoints(friends){
-    console.log('Preparing map points for friends:', friends);
+    // console.log('Preparing map points for friends:', friends);
     const list_of_friend_ids = friends.map(friend => friend.id);
     list_of_friend_ids.push(userId.id); // Include the current user ID
-    console.log('List of friend IDs:', list_of_friend_ids);
+    // console.log('List of friend IDs:', list_of_friend_ids);
     // Fetch user points
     const { data: points, error: pointsError } = await _supabase
         .from('Points')
@@ -93,8 +93,11 @@ async function prepMapPoints(friends){
     return points;
 }
 
-function renderMapPoints(points, friends) {
-    console.log('Rendering map points:', points);
+async function renderMapPoints(points, friends) {
+    // console.log('Rendering map points for friends:', friends);
+    // add self id and username to friends array
+    friends.push({  username: 'You', id: userId.id });
+    // console.log('Rendering map points:', points);
     // Update map with points
     if (L.DomUtil.get('map') != null) {
         L.DomUtil.get('map')._leaflet_id = null;
@@ -106,9 +109,10 @@ function renderMapPoints(points, friends) {
     maxZoom: 18,
     }).addTo(map);
 
-    points.forEach(point => {
+    points.forEach(async point => {
     const marker = L.marker([point.lat, point.lng]).addTo(map);
-    marker.bindPopup(`<h2>${getUsernameFromId(point.id, friends)}</h2><b>${point.description}</b><br>${new Date(point.date_and_time).toLocaleString()}`);
+    const username = await getUsernameFromId(point.user, friends);
+    marker.bindPopup(`<h2>${username}</h2><b>${point.description}</b><br>${new Date(point.date_and_time).toLocaleString()}`);
     });
 
     if (points.length > 0) {
