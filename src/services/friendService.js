@@ -152,6 +152,8 @@ export async function renderFriendsLeaderboard(userId) {
             console.error('Friends leaderboard container not found.');
             return;
         }
+        // Clear previous content
+        div.innerHTML = ''; // Clear previous content
 
         // add section title for friends leaderboard
         const sectionTitle = document.createElement('div');
