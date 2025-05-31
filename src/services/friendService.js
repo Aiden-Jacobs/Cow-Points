@@ -212,9 +212,9 @@ export async function renderFriendsLeaderboard(userId) {
 * @throws {Error} - If the user is not found in the friends list
 */
 export async function getUsernameFromId(userId, friends) {
-    console.log('Fetching username for userId:', userId);
-    console.log('friends', friends);
-    console.log('username', friends.find(friend => friend.id === userId)?.username);
+    // console.log('Fetching username for userId:', userId);
+    // console.log('friends', friends);
+    // console.log('username', friends.find(friend => friend.id === userId)?.username);
     
     const username = await friends.find(friend => friend.id === userId)?.username;
     if (!username) {
