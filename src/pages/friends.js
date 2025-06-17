@@ -42,9 +42,10 @@ document.getElementById('add-friend-form').addEventListener('submit', async (e) 
         ul.innerHTML = '';
 
         requests.forEach(req => {
+            // Create a list item for each pending request so
+            // the user can accept it
             const li = document.createElement('li');
             li.textContent = req.username;
-
             const acceptBtn = document.createElement('button');
             acceptBtn.textContent = 'Accept';
             acceptBtn.onclick = async () => {
@@ -63,7 +64,6 @@ document.getElementById('add-friend-form').addEventListener('submit', async (e) 
                     alert(`Failed to accept friend request: ${err.message}`);
                 }
             };
-
             li.appendChild(acceptBtn);
             ul.appendChild(li);
         });
