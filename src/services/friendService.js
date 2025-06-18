@@ -222,5 +222,5 @@ export async function getUsernameFromId(userId, friends) {
     if (!username) {
         throw new Error('User not found');
     }
-    return username
+    return username  
 }
