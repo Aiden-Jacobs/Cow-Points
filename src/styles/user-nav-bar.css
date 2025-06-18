@@ -28,8 +28,10 @@
     text-decoration: none;
     color: #fff;
     font-weight: bold;
+    background-color: #fb3e3e;
     padding: 5px 10px;
     border-radius: 5px;
+    box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s;
 }
 
@@ -53,5 +55,18 @@
             list-style-type: none;
             margin: 0;
             padding: 3px;
+        }
+        .dashboard-container user-nav-bar ul li {
+            margin: 0 15px;
+            display: inline-block;
+            padding: 5px 0;
+        }
+        .dashboard-container user-nav-bar ul li a {
+            box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2);
+            
+            /* border: #d95555;
+            border-style: solid;
+            border-width: 3px; */
+            
         }
     }

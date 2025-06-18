@@ -104,7 +104,9 @@
         display: flex;
         flex-direction: column;
     }
-
+    #friend-list-ul {
+        text-align: left;
+    }
 
     /* phone CSS */
     @media screen and (max-width: 480px) {
@@ -149,6 +151,9 @@
     </style>
     <link rel="stylesheet" href="src/styles/Header.css">
     <link rel="stylesheet" href="src/styles/user-nav-bar.css">
+    <link rel="stylesheet" href="src/styles/friend_leaderboard.css">
+    <link rel="stylesheet" href="src/styles/inputs.css">
+    <link rel="stylesheet" href="src/styles/buttons.css">
     <script src="src/components/user_nav_bar.js" type="module"></script>
     <!-- These links are for the map -->
         <!-- leaflet.js css -->
@@ -174,16 +179,9 @@
                 <user-nav-bar></user-nav-bar>
                 <!-- user points section -->
                 <div class="section" id="user-points">
-                    <div class="section-title">Friends leaderboard</div>
+                    <div class="friend-leaderboard" id ="friends-leaderboard-container"></div>
                 </div>
-                <!-- add friend section -->
-                <div class="section" id="add-friend">
-                    <div class="section-title">Add a friend</div>
-                    <form id="add-friend-form">
-                        <input type="text" id="friend-username" placeholder="Friend's username">
-                        <button type="submit">Add friend</button>
-                    </form>
-                </div>
+
                 <!-- map of friends points section -->
                 <div class="section" id="add-point">
                     <div>
@@ -191,17 +189,30 @@
                         <div id="map" style="width: 100%; height: 400px;"></div>
                     </div>
                 </div>
+                <!-- add friend section -->
+                <div class="section" id="add-friend">
+                    <div class="section-title">Add a friend</div>
+                    <form id="add-friend-form">
+                        <input type="text" id="friend-username" class="form_input" placeholder="Friend's username">
+                        <div id="autocomplete-suggestions" style="position: relative;"></div>
+                        <button type="submit" class="header-button">Add Friend</button>
+                    </form>
+                    <div class="section" id="pending-friends">
+                        <div class="section-title">Pending Friend Requests</div>
+                        <ul id="pending-requests-ul"></ul>
+                    </div>
+                </div>
 
                 <!-- list of your friends -->
                 <div class="section" id="points-list">
                     <div class="section-title">Friends</div>
-                    <ul id="points-list-ul">
+                    <ul id="friend-list-ul">
                         <!-- <li>Point 1</li> -->
                     </ul>
 				 </div>
             </div>       
-        <script type="module" src="src/pages/Dashboard.js"></script>
-        <script src="src/pages/map_select.js"></script>
+        <script type="module" src="src/pages/friends.js"></script>
+        <!-- <script src="src/pages/map_select.js"></script> -->
     </main>
 </body>
 </html>

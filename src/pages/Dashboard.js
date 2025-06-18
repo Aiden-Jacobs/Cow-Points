@@ -1,5 +1,6 @@
 import { setRandomBackground } from '../utils/utils.js';
 setRandomBackground();
+import { renderFriendsLeaderboard } from '../services/friendService.js';
 
 
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
@@ -128,7 +129,8 @@ const id = userData.id;
 document.getElementById('Username').textContent = userData.username;
 document.getElementById('userPoints').textContent = await fetchUserPointsCount(id)
 set_leaderboard_position(await fetchLeaderboardPosition(id));
-
+console.log('User ID:', id);
+renderFriendsLeaderboard(userData);
 
 document.querySelector('.add-point-form').addEventListener('submit', async (e) => {
     e.preventDefault();
