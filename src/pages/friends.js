@@ -26,6 +26,10 @@ document.getElementById('add-friend-form').addEventListener('submit', async (e) 
     e.preventDefault();
     const friendUsername = document.getElementById('friend-username').value.trim();
     try {
+        if (!friendUsername) {
+            alert('Please enter a username.');
+            return;
+        }
       await sendFriendRequest(userId.id, friendUsername);
       alert('Friend request sent!');
     // TODO: add message to the page that says friend request sent
@@ -33,6 +37,75 @@ document.getElementById('add-friend-form').addEventListener('submit', async (e) 
       alert(err.message);
     }
   });
+
+const friendInput = document.getElementById('friend-username');
+const suggestionsContainer = document.getElementById('autocomplete-suggestions');
+let debounceTimeout;
+friendInput.addEventListener('input', () => {
+  clearTimeout(debounceTimeout);
+  const query = friendInput.value.trim();
+  if (query.length < 2) {
+    suggestionsContainer.innerHTML = '';
+    return;
+  }
+
+  debounceTimeout = setTimeout(async () => {
+    const results = await searchUsers(query);
+    renderSuggestions(results);
+  }, 300);
+});
+
+async function searchUsers(query) {
+  const { data, error } = await _supabase
+    .rpc('search_users_autocomplete', { search_term: query });
+
+  if (error) {
+    console.error('Search failed:', error.message);
+    return [];
+  }
+
+  // Filter out already-friends or pending requests
+  const existingFriends = await listFriends(userId.id);
+  const pendingRequests = await getPendingFriendRequests(userId.id);
+  const existingUsernames = new Set([...existingFriends, ...pendingRequests].map(f => f.username));
+
+  return data.filter(user => !existingUsernames.has(user.username));
+}
+
+function renderSuggestions(users) {
+  suggestionsContainer.innerHTML = '';
+  suggestionsContainer.style.position = 'absolute';
+  suggestionsContainer.style.backgroundColor = '#fff';
+  suggestionsContainer.style.border = '1px solid #ccc';
+  suggestionsContainer.style.zIndex = '999';
+// this sets the position of the suggestions container so
+// that it appears below the input field so the user knows
+// that the suggestions are related to the input field
+    const rect = friendInput.getBoundingClientRect();
+    suggestionsContainer.style.top = `${rect.bottom + window.scrollY}px`;
+    suggestionsContainer.style.left = `${rect.left + window.scrollX}px`;
+    suggestionsContainer.style.width = `${friendInput.offsetWidth}px`;
+
+  users.forEach(user => {
+    const div = document.createElement('div');
+    div.textContent = user.username;
+    div.style.padding = '4px';
+    div.style.cursor = 'pointer';
+    div.addEventListener('click', () => {
+      friendInput.value = user.username;
+      suggestionsContainer.innerHTML = '';
+    });
+    suggestionsContainer.appendChild(div);
+  });
+
+  if (users.length === 0) {
+    const noResult = document.createElement('div');
+    noResult.textContent = 'No matches found';
+    noResult.style.padding = '4px';
+    suggestionsContainer.appendChild(noResult);
+  }
+}
+
   
 
   async function displayPendingRequests() {
@@ -45,9 +118,10 @@ document.getElementById('add-friend-form').addEventListener('submit', async (e) 
             // Create a list item for each pending request so
             // the user can accept it
             const li = document.createElement('li');
-            li.textContent = req.username;
+            li.textContent = req.username + " ";
             const acceptBtn = document.createElement('button');
-            acceptBtn.textContent = 'Accept';
+            acceptBtn.className = 'accept-request-btn';
+            acceptBtn.textContent = '+ ADD';
             acceptBtn.onclick = async () => {
                 try {
                     await acceptFriendRequest(userId.id, req.id);
