@@ -152,6 +152,8 @@
     <link rel="stylesheet" href="src/styles/Header.css">
     <link rel="stylesheet" href="src/styles/user-nav-bar.css">
     <link rel="stylesheet" href="src/styles/friend_leaderboard.css">
+    <link rel="stylesheet" href="src/styles/inputs.css">
+    <link rel="stylesheet" href="src/styles/buttons.css">
     <script src="src/components/user_nav_bar.js" type="module"></script>
     <!-- These links are for the map -->
         <!-- leaflet.js css -->
@@ -191,8 +193,9 @@
                 <div class="section" id="add-friend">
                     <div class="section-title">Add a friend</div>
                     <form id="add-friend-form">
-                        <input type="text" id="friend-username" placeholder="Friend's username">
-                        <button type="submit">Add friend</button>
+                        <input type="text" id="friend-username" class="form_input" placeholder="Friend's username">
+                        <div id="autocomplete-suggestions" style="position: relative;"></div>
+                        <button type="submit" class="header-button">Add Friend</button>
                     </form>
                     <div class="section" id="pending-friends">
                         <div class="section-title">Pending Friend Requests</div>
