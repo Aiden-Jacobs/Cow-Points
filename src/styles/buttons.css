@@ -1,0 +1,21 @@
+/* Button styles*/
+@font-face {
+    font-family: 'MyCustomFont';
+    src: url('../../Assets/Fonts/PixeloidMono-d94EV.ttf') format('truetype');
+}
+/* Accept Request Button styles */
+    .accept-request-btn{
+        background-color: #2cff41;
+        color: white;
+        border: 1px solid rgb(99, 200, 117);
+        box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.2);
+        padding: 2px 2px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: MyCustomFont;
+    }
+    /* accept-request-btn on hover */
+    .accept-request-btn:hover {
+        background-color: #1f9e2c;
+    }
