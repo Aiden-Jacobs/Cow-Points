@@ -13,26 +13,40 @@
     body {
       margin: 0;
       padding: 0;
+      height: 100%;
       font-family: Arial, sans-serif;
       background-size: cover;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      /* display: flex; */
+      /* justify-content: center; */
+      /* align-items: center; */
+      /* height: 100vh; */
     }
 
     a {
       text-decoration: none;
     }
 
+    .page-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      align-items: center; /* Centers leaderboard horizontally */
+      padding-top: 10vh;  
+    }
+
     .leaderboard-container {
+      flex-grow: 1;
+      height: 80vh;
+      max-height: 80vh;
+      /* padding-top: 200px; */
+      flex : 1;
+      width: 100%;
+      max-width: 60%;
       background-color: rgba(128, 128, 128, 0.8);
       padding: 20px;
       border-radius: 10px;
       text-align: center;
       /* width: 400px; */
-      height: 80vh;
-      max-width: 60%;
       overflow: auto;
       margin-top: 1%;
     }
@@ -76,7 +90,7 @@
 
     .scroll-container {
       max-height: 80vh;
-      overflow-y: auto;
+      /* overflow-y: auto; */
     }
 
     @media screen and (max-width: 480px) {
@@ -143,10 +157,14 @@
 
   <!-- Header CSS -->
   <link rel="stylesheet" href="src/styles/Header.css" />
+  <!-- Footer CSS -->
+  <link rel="stylesheet" href="src/styles/footer.css" />
+  <script type="module" src="src/components/footer_component.js"></script>
   <script type="module" src="src/pages/main.js"></script>
 </head>
 
 <body>
+  <div class="page-container">
   <header class="header">
     <h1 class="header-title">LEADERBOARD</h1>
     <div id="header-button-container">
@@ -194,5 +212,9 @@
     </div>
   </div>
 
+  
+
+</div>
+<site-footer></site-footer>
 </body>
 </html>
