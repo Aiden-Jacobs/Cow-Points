@@ -30,6 +30,7 @@ The web app is currently in beta and publicly available at [cowpoints.com](https
 
 - **Frontend**: HTML, CSS, and JavaScript.
 - **Backend**: Supabase (database) with the `supabase-js` library for interactions.
+  - `import "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"`
 - **Hosting**: [cowpoints.com](https://cowpoints.com).
 
 ---
