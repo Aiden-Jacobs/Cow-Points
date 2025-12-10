@@ -71,4 +71,17 @@ export async function add_header_buttons(supabase_session) {
         // this adds the leaderboard button to the header so that it is visible when the user is logged in
         document.getElementById("header-button-container").appendChild(leaderboardButton);
     }
+
+    if (window.location.href.includes("contact.html")) {
+        // add buttons to the contact page to navigate to the the homepage
+        const homeButton = document.createElement("button");
+        homeButton.textContent = "LEADERBOARD";
+        homeButton.classList.add("header-button");
+        homeButton.id = "home-button";
+        homeButton.onclick = () => {
+            window.location.href = "index.html";
+        }
+        // this adds the home button to the header so that it is visible when the user is logged in
+        document.getElementById("header-button-container").appendChild(homeButton);
+    }
 }

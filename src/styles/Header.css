@@ -1,4 +1,10 @@
 /* Header Styling */
+
+/* TODO
+   - Add styles for the home button
+        homeButton.classList.add("header-button");
+        homeButton.id = "home-button";
+*/
 @font-face {
     font-family: 'MyCustomFont';
     src: url('../../Assets/Fonts/PixeloidMono-d94EV.ttf') format('truetype');
@@ -62,6 +68,10 @@
     font-family: MyCustomFont;
 }
 
+/* TODO make the home button not half way off the screen on the right side */
+#home-button {
+    margin-right: 30px;
+}
 @media screen and (max-width: 480px) {
     .sign-in-button {
         font-size: 13px;
