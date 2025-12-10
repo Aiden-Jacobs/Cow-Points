@@ -1,5 +1,7 @@
 import { setRandomBackground } from '../utils/utils.js';
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+// Import Current Supabase library
+import "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+const { createClient } = supabase;
 
 
 const SUPABASE_URL = 'https://sagwqkyampwcuzvllbvm.supabase.co';
