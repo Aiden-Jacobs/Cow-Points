@@ -144,6 +144,7 @@
   <!-- Header CSS -->
   <link rel="stylesheet" href="src/styles/Header.css" />
   <script type="module" src="src/pages/main.js"></script>
+  <link rel="stylesheet" href="src/styles/Footer.css" />
 </head>
 
 <body>
@@ -193,6 +194,16 @@
       <img src="Assets/Art/PNG/rules.png" alt="Rules" />
     </div>
   </div>
+
+  <div id="footer-container"></div>
+  <script type="module">
+    async function loadFooter() {
+      const response = await fetch('src/components/footer.html');
+      const footerHTML = await response.text();
+      document.getElementById('footer-container').innerHTML = footerHTML;
+    }
+    loadFooter();
+  </script>
 
 </body>
 </html>
