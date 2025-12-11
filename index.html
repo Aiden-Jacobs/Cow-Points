@@ -86,10 +86,11 @@
 
     @media screen and (max-width: 480px) {
       .leaderboard-container {
-        overflow: auto;
+        /* overflow: auto; */
         width: 100%;
         max-width: 80%;
-        margin-top: 8%;
+        /* margin-top: 8%; */
+        height: 70vh;
       }
         .leaderboard-title {
             font-size: 24px;
@@ -97,6 +98,9 @@
         .leaderboard-table {
             font-size: 16px;
         }
+      .scroll-container {
+        max-height: calc(75vh - 150px);
+      }
 
     }
 
