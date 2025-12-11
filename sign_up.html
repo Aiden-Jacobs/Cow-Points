@@ -105,5 +105,15 @@
         <a class="back-link" href="sign_in.html">Already have an account? Sign In</a>
     </div>
 
+    <link rel="stylesheet" href="src/styles/Footer.css" />
+    <div id="footer-container"></div>
+    <script type="module">
+        async function loadFooter() {
+        const response = await fetch('src/components/footer.html');
+        const footerHTML = await response.text();
+        document.getElementById('footer-container').innerHTML = footerHTML;
+        }
+        loadFooter();
+    </script>
 </body>
 </html>

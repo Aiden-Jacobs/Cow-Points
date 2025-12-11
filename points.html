@@ -220,6 +220,16 @@
         <script type="module" src="src/pages/points_page.js"></script>
 
         <!-- <script src="src/pages/map_select.js"></script> -->
+        <link rel="stylesheet" href="src/styles/Footer.css" />
+        <div id="footer-container"></div>
+        <script type="module">
+            async function loadFooter() {
+            const response = await fetch('src/components/footer.html');
+            const footerHTML = await response.text();
+            document.getElementById('footer-container').innerHTML = footerHTML;
+            }
+            loadFooter();
+        </script>
     </main>
 </body>
 </html>

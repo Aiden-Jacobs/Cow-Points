@@ -309,5 +309,15 @@
         <script type="module" src="src/pages/Dashboard.js"></script>
         <script src="src/pages/map_select.js"></script>
     </main>
+    <link rel="stylesheet" href="src/styles/Footer.css" />
+    <div id="footer-container"></div>
+    <script type="module">
+        async function loadFooter() {
+        const response = await fetch('src/components/footer.html');
+        const footerHTML = await response.text();
+        document.getElementById('footer-container').innerHTML = footerHTML;
+        }
+        loadFooter();
+    </script>
 </body>
 </html>

@@ -150,6 +150,7 @@
 
     </style>
     <link rel="stylesheet" href="src/styles/Header.css">
+     <link rel="stylesheet" href="src/styles/Footer.css" />
     <link rel="stylesheet" href="src/styles/user-nav-bar.css">
     <link rel="stylesheet" href="src/styles/friend_leaderboard.css">
     <link rel="stylesheet" href="src/styles/inputs.css">
@@ -205,13 +206,23 @@
 
                 <!-- list of your friends -->
                 <div class="section" id="points-list">
-                    <div class="section-title">Friends</div>
+                    <div class="section-title">FrienDDds</div>
                     <ul id="friend-list-ul">
                         <!-- <li>Point 1</li> -->
                     </ul>
 				 </div>
             </div>       
         <script type="module" src="src/pages/friends.js"></script>
+
+        <div id="footer-container"></div>
+        <script type="module">
+            async function loadFooter() {
+            const response = await fetch('src/components/footer.html');
+            const footerHTML = await response.text();
+            document.getElementById('footer-container').innerHTML = footerHTML;
+            }
+            loadFooter();
+        </script>
         <!-- <script src="src/pages/map_select.js"></script> -->
     </main>
 </body>
