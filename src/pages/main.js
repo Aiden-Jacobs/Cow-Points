@@ -1,8 +1,7 @@
 import { setRandomBackground, add_header_buttons } from '../utils/utils.js';
 // console.log('Dashboard loaded');
 
-// Import Current Supabase library
-import "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+// Access Supabase from global scope (loaded via CDN in HTML)
 const { createClient } = supabase;
 
 // Initialize Supabase
