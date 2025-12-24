@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> 
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service · Cow Points</title>
+  <!-- Custom Font -->
+  <style>
+    @font-face {
+      font-family: 'MyCustomFont';
+      src: url('Assets/Fonts/PixeloidMono-d94EV.ttf') format('truetype');
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      justify-content: space-between;
+    }
+
+    a {
+      text-decoration: none;
+    }
+    .legal-page {
+      margin: 10% 15%;
+      background-color: rgba(128, 128, 128, 0.8);
+      padding: 30px;
+      border-radius: 10px;
+    }
+
+    
+
+    @media screen and (max-width: 480px) {
+
+    }
+  </style>
+  <link rel="stylesheet" href="src/styles/footer.css" />
+    <link rel="stylesheet" href="src/styles/Header.css" />
+</head>
+
+<body>
+
+<script type="module" src="src/pages/status.js"></script>
+<header class="header">
+<h1 class="header-title">TERMS</h1>
+<div id="header-button-container">
+    <!-- <a href="sign_in.html" id="sign-in-link">
+    <button class="header-button" id="sign-in">Sign In</button>
+    </a> -->
+</div>
+</header>
+
+<main class="legal-page">
+  <h1>Terms of Service</h1>
+  <p class="muted">Last updated: December 2025</p>
+
+  <h2>1. Acceptance of Terms</h2>
+  <p>
+    By accessing or using Cow Points (“the Service”), you agree to be bound by these
+    Terms of Service. If you do not agree, please do not use the Service.
+  </p>
+
+  <h2>2. Use of the Service</h2>
+  <p>
+    Cow Points is a game-based points and leaderboard system intended for entertainment.
+    You agree to use the Service lawfully and not to abuse, exploit, or interfere with
+    the system or other users.
+  </p>
+
+  <h2>3. Scoring & Fair Play</h2>
+  <ul>
+    <li>Points must be earned according to published rules.</li>
+    <li>Cheating, automation, or manipulation may result in removal of points.</li>
+    <li>Scoring disputes are resolved at the discretion of the administrators.</li>
+  </ul>
+
+  <h2>4. User Content</h2>
+  <p>
+    You retain ownership of content you submit, but grant Cow Points permission to display
+    it within the Service.
+  </p>
+
+  <h2>5. Availability</h2>
+  <p>
+    The Service is provided “as is” and may change or be discontinued at any time.
+  </p>
+
+  <h2>6. Limitation of Liability</h2>
+  <p>
+    Cow Points is not responsible for lost data, points, downtime, or damages resulting
+    from use of the Service.
+  </p>
+
+  <h2>7. Changes</h2>
+  <p>
+    These Terms may be updated periodically. Continued use indicates acceptance.
+  </p>
+
+  <h2>8. Contact</h2>
+  <p>
+    Questions can be directed through the <a href="/contact.html">Contact</a> page.
+  </p>
+</main>
+  <!-- Footer -->
+  <div id="footer-container"></div>
+  <script type="module">
+    async function loadFooter() {
+      const response = await fetch('src/components/footer.html');
+      const footerHTML = await response.text();
+      document.getElementById('footer-container').innerHTML = footerHTML;
+    }
+    loadFooter();
+  </script>
+
+</body>
+</html>
