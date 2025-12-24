@@ -72,7 +72,7 @@ export async function add_header_buttons(supabase_session) {
         document.getElementById("header-button-container").appendChild(leaderboardButton);
     }
 
-    if (window.location.href.includes("contact.html")) {
+    if (window.location.href.includes("contact.html") || window.location.href.includes("status.html")) {
         // add buttons to the contact page to navigate to the the homepage
         const homeButton = document.createElement("button");
         homeButton.textContent = "LEADERBOARD";
