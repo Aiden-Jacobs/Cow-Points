@@ -27,69 +27,27 @@
     a {
       text-decoration: none;
     }
-
-    .contact-container {
-      /* max-width: 600px; */
-      
-      margin-top: 10%;
-        margin-left: 20%;
-        margin-right: 20%;
+    .status-container {
+      margin: 10% 20%;
       background-color: rgba(128, 128, 128, 0.8);
       padding: 30px;
       border-radius: 10px;
       text-align: center;
     }
-
-    .contact-title {
+    .status-title {
       font-family: 'MyCustomFont', Arial, sans-serif;
       font-size: 36px;
       color: red;
       margin-bottom: 20px;
     }
-
-    .contact-form {
-      display: flex;
-      flex-direction: column;
-      padding: 10px;
-      gap: 15px;
+    .status-message {
+      font-size: 20px;
+      color: #333;
     }
 
-    .contact-form input,
-    .contact-form textarea {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      
-      font-family: Arial, sans-serif;
-    }
-
-    .contact-form button {
-      background-color: #007bffc5;
-      color: white;
-      border: none;
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-family: MyCustomFont;
-      /* transition: background 0.3s; */
-    }
-
-    .contact-form button:hover {
-      background-color: #005bb5;
-    }
 
     @media screen and (max-width: 480px) {
-      .contact-container {
-        margin-top: 20%;
-        margin-left: 5%;
-        margin-right: 5%;
-        padding: 20px;
-      }
-      .contact-title {
-        font-size: 24px;
-      }
+
     }
   </style>
 
@@ -108,7 +66,37 @@
     </div>
   </header>
 
+  <main>
+    <div class="status-container">
+      <!-- <div class="status-title">Current Status</div>
+      <div class="status-message">All systems operational</div> -->
+      <h1>System Status</h1>
 
+        <div class="status-indicator operational">
+        🟢 All Systems Operational
+        </div>
+
+        <section>
+        <h2>Current Status</h2>
+        <p>No known issues at this time.</p>
+        </section>
+
+        <section>
+        <h2>Maintenance</h2>
+        <p>No scheduled maintenance.</p>
+        </section>
+
+        <section>
+        <h2>Incident History</h2>
+        <p>No recent incidents.</p>
+        </section>
+
+        <!-- Placeholder for future auto-feed -->
+        <section id="status-feed" hidden>
+        <h2>Live Updates</h2>
+        </section>
+        </div>
+  </main>
 
   <!-- Footer -->
   <div id="footer-container"></div>
@@ -119,6 +107,23 @@
       document.getElementById('footer-container').innerHTML = footerHTML;
     }
     loadFooter();
+    fetch("https://api.github.com/repos/Aiden-Jacobs/Cow-Points/issues?labels=status")
+    .then(res => res.json())
+    .then(data => {
+      const statusFeed = document.getElementById("status-feed");
+      statusFeed.innerHTML = ""; // Clear any existing content
+      data.forEach(issue => {
+        const issueElement = document.createElement("div");
+        issueElement.classList.add("status-issue");
+        issueElement.innerHTML = `
+          <h3>${issue.title}</h3>
+          <p>${issue.body}</p>
+        `;
+        statusFeed.appendChild(issueElement);
+      });
+      statusFeed.hidden = false; // Show the feed
+    });
+
   </script>
 
 </body>
