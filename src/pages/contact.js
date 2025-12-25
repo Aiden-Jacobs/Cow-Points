@@ -47,8 +47,7 @@ if (contactForm) {
     // alert for feedback submission form is not currently functional
     alert('Feedback submission is currently disabled.\nPlease contact us via email at admin@cowpoints.com ');
   });
+}
 
     setRandomBackground();
     add_header_buttons(_supabase);
-
-}
