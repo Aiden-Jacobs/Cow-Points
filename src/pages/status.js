@@ -18,9 +18,9 @@ async function loadStatusIssues() {
     const res = await fetch(
       "https://api.github.com/repos/Aiden-Jacobs/Cow-Points/issues?labels=status"
     );
-
+    console.log(res.length);
     const issues = await res.json();
-
+console.log(issues);
     if (!Array.isArray(issues) || issues.length === 0) {
       container.innerHTML = "<p>No active status updates.</p>";
       return;

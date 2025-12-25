@@ -71,7 +71,6 @@
 .status-meta {
   font-size: .85rem;
   opacity: .7;
-  display: flex;
   gap: .8rem;
   margin-bottom: .8rem;
 }
@@ -81,7 +80,7 @@
 }
 
 .state.open {
-  color: #ffcc00;
+  color: #00ff7f;
 }
 
 .state.closed {
@@ -207,13 +206,8 @@ hr {
       <h1>System Status</h1>
 
         <div class="status-indicator operational">
-        🟢 All Systems Operational
+        <!-- 🟢 All Systems Operational -->
         </div>
-
-        <section>
-        <h2>Current Status</h2>
-        <p>No known issues at this time.</p>
-        </section>
 
         <section>
         <h2>Maintenance</h2>
@@ -242,24 +236,6 @@ hr {
       document.getElementById('footer-container').innerHTML = footerHTML;
     }
     loadFooter();
-    // fetch("https://api.github.com/repos/Aiden-Jacobs/Cow-Points/issues?labels=status")
-    // .then(res => res.json())
-    // .then(data => {
-    //   const statusFeed = document.getElementById("status-feed");
-    //   statusFeed.innerHTML = ""; // Clear any existing content
-    //   data.forEach(issue => {
-    //     const issueElement = document.createElement("div");
-    //     issueElement.classList.add("status-issue");
-    //     issueElement.innerHTML = `
-    //       <h3>${issue.title}</h3>
-    //       <p>${issue.body}</p>
-    //     `;
-    //     console.log(issue);
-    //     statusFeed.appendChild(issueElement);
-    //   });
-    //   statusFeed.hidden = false; // Show the feed
-    // });
-
   </script>
 
 </body>
