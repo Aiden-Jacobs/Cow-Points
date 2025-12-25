@@ -2,6 +2,8 @@
 <html lang="en">
 <head> 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> 
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Contact Us</title>
@@ -44,11 +46,143 @@
       font-size: 20px;
       color: #333;
     }
+#status-feed {
+  /* margin-left: -10%; */
+    margin-top: 1rem;
+    /* margin-right: auto;*/
+  display: grid;
+  gap: 1rem;
+}
+
+.status-card {
+  /* background: #111; */
+  /* margin: 10% 20%; */
+  border-radius: 10px;
+  /* padding: 1rem 1.2rem; */
+  border: 1px solid #222;
+  padding: 7px;
+}
+
+.status-card h3 {
+  margin: 0 0 .5rem 0;
+  /* margin: 10% 20%; */
+}
+
+.status-meta {
+  font-size: .85rem;
+  opacity: .7;
+  display: flex;
+  gap: .8rem;
+  margin-bottom: .8rem;
+}
+
+.status-body {
+  line-height: 1.6;
+}
+
+.state.open {
+  color: #ffcc00;
+}
+
+.state.closed {
+  color: #00ff7f;
+}
+/* Container */
+.github-issue {
+  max-width: 900px;
+  margin: auto;
+  padding: 16px;
+}
 
 
     @media screen and (max-width: 480px) {
+        .github-issue {
+            padding: 12px;
+        }
+        .status-container {
+            margin: 10% 5%;
+            padding: 20px;
+        }
 
+        h1 {
+            font-size: 1.6rem;
+        }
+
+        h2 {
+            font-size: 1.35rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+        }
+
+        pre {
+            font-size: 0.8rem;
+        }
     }
+
+/* === Typography === */
+h1, h2, h3, h4 {
+  color: #ffffff;
+  font-weight: 600;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+p {
+  margin: 10px 0;
+}
+
+strong {
+  color: #fff;
+}
+
+/* === Code & Blocks === */
+pre {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 12px;
+  overflow-x: auto;
+}
+
+code {
+  background: #6999db;
+  border: 1px solid #30363d;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+/* === Lists === */
+ul, ol {
+  padding-left: 18px;
+}
+
+/* === Links === */
+a {
+  color: #58a6ff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* === Divider === */
+hr {
+  border: 0;
+  border-bottom: 1px solid #30363d;
+  margin: 16px 0;
+}
+
+/* === Boxes (like issue callouts) === */
+.github-box {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 12px;
+  margin: 12px 0;
+}
   </style>
 
   <!-- Footer CSS -->
@@ -91,10 +225,11 @@
         <p>No recent incidents.</p>
         </section>
 
-        <!-- Placeholder for future auto-feed -->
-        <section id="status-feed" hidden>
-        <h2>Live Updates</h2>
+        <section>
+        <h2>Live Status Feed</h2>
+        <div id="status-feed">Loading…</div>
         </section>
+
         </div>
   </main>
 
@@ -106,23 +241,24 @@
       const footerHTML = await response.text();
       document.getElementById('footer-container').innerHTML = footerHTML;
     }
-    loadFooter();
-    fetch("https://api.github.com/repos/Aiden-Jacobs/Cow-Points/issues?labels=status")
-    .then(res => res.json())
-    .then(data => {
-      const statusFeed = document.getElementById("status-feed");
-      statusFeed.innerHTML = ""; // Clear any existing content
-      data.forEach(issue => {
-        const issueElement = document.createElement("div");
-        issueElement.classList.add("status-issue");
-        issueElement.innerHTML = `
-          <h3>${issue.title}</h3>
-          <p>${issue.body}</p>
-        `;
-        statusFeed.appendChild(issueElement);
-      });
-      statusFeed.hidden = false; // Show the feed
-    });
+    // loadFooter();
+    // fetch("https://api.github.com/repos/Aiden-Jacobs/Cow-Points/issues?labels=status")
+    // .then(res => res.json())
+    // .then(data => {
+    //   const statusFeed = document.getElementById("status-feed");
+    //   statusFeed.innerHTML = ""; // Clear any existing content
+    //   data.forEach(issue => {
+    //     const issueElement = document.createElement("div");
+    //     issueElement.classList.add("status-issue");
+    //     issueElement.innerHTML = `
+    //       <h3>${issue.title}</h3>
+    //       <p>${issue.body}</p>
+    //     `;
+    //     console.log(issue);
+    //     statusFeed.appendChild(issueElement);
+    //   });
+    //   statusFeed.hidden = false; // Show the feed
+    // });
 
   </script>
 

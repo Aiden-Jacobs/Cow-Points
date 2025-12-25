@@ -10,5 +10,59 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 
+
+async function loadStatusIssues() {
+  const container = document.getElementById("status-feed");
+
+  try {
+    const res = await fetch(
+      "https://api.github.com/repos/Aiden-Jacobs/Cow-Points/issues?labels=status"
+    );
+
+    const issues = await res.json();
+
+    if (!Array.isArray(issues) || issues.length === 0) {
+      container.innerHTML = "<p>No active status updates.</p>";
+      return;
+    }
+
+    container.innerHTML = "";
+
+    issues.forEach(issue => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "status-card";
+
+      const bodyHTML = marked.parse(issue.body || "No details provided.");
+
+      wrapper.innerHTML = `
+        <h3>${issue.title}</h3>
+
+        <div class="status-meta">
+          <span>#${issue.number}</span>
+          <span>${new Date(issue.created_at).toLocaleString()}</span>
+          <span class="state ${issue.state}">
+            ${issue.state.toUpperCase()}
+          </span>
+        </div>
+
+        <div class="status-body">
+          ${bodyHTML}
+        </div>
+      `;
+
+      container.appendChild(wrapper);
+    });
+
+  } catch (err) {
+    container.innerHTML = "<p>Failed to load status updates.</p>";
+    console.error(err);
+  }
+}
+
+loadStatusIssues();
+
+
+
 setRandomBackground();
 add_header_buttons(_supabase);
+loadStatusIssues();
