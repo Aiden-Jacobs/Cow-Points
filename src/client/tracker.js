@@ -14,7 +14,7 @@ const CONFIG = {
     // TRACKING_ENDPOINT: 'http://your-domain.com/track', 
 
     // Option B: PHP Backend
-    TRACKING_ENDPOINT: 'http://cowpoints.com/pixel.php',
+    TRACKING_ENDPOINT: 'http://cowpoints.com/src/php/pixel.php',
     // local testing endpoint
     // TRACKING_ENDPOINT: 'http://localhost:5500/pixel.php',
 };
