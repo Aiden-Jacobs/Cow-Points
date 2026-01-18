@@ -8,9 +8,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <!-- Leaflet Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         .json-modal {
             background: rgba(0, 0, 0, 0.5);
+        }
+
+        #map {
+            height: 400px;
+            z-index: 1;
         }
     </style>
 </head>
@@ -36,20 +44,34 @@
         <!-- Filters -->
         <div class="bg-white p-6 rounded-lg shadow-sm space-y-4">
             <h2 class="font-semibold text-gray-700">Filters</h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <input type="text" id="filterSource" placeholder="Source (e.g. resume)" class="border p-2 rounded"
-                    onkeyup="renderTable()">
+                    onkeyup="renderDashboard()">
                 <input type="text" id="filterIP" placeholder="IP Address" class="border p-2 rounded"
-                    onkeyup="renderTable()">
-                <input type="text" id="filterPlatform" placeholder="Platform/OS" class="border p-2 rounded"
-                    onkeyup="renderTable()">
-                <select id="filterTime" class="border p-2 rounded" onchange="renderTable()">
+                    onkeyup="renderDashboard()">
+                <input type="text" id="filterPlatform" placeholder="Platform (Win32, etc)" class="border p-2 rounded"
+                    onkeyup="renderDashboard()">
+                <select id="filterDevice" class="border p-2 rounded" onchange="renderDashboard()">
+                    <option value="">All Devices</option>
+                    <option value="desktop">Desktop</option>
+                    <option value="mobile">Mobile (iPhone/Android)</option>
+                    <option value="bot">Bots/Crawlers</option>
+                </select>
+                <select id="filterTime" class="border p-2 rounded" onchange="renderDashboard()">
                     <option value="all">All Time</option>
                     <option value="24h">Last 24 Hours</option>
                     <option value="7d">Last 7 Days</option>
                     <option value="30d">Last 30 Days</option>
                 </select>
             </div>
+        </div>
+
+        <!-- Map -->
+        <div class="bg-white p-6 rounded-lg shadow-sm">
+            <h3 class="font-semibold mb-4">Visitor Map (Approximate Location via IP)</h3>
+            <div id="map" class="rounded border"></div>
+            <p class="text-xs text-gray-400 mt-2">Note: Locations are approximate based on Cloudflare/IP data. Only
+                displays visitors with Country info.</p>
         </div>
 
         <!-- Charts -->
@@ -103,6 +125,8 @@
     <script>
         let rawData = [];
         let charts = {};
+        let map = null;
+        let markers = [];
 
         // Configuration
         // const DATA_URL = 'visits.json'; // Expects visits.json in SAME directory
@@ -113,7 +137,6 @@
                 // Determine URL: Use local sample if file protocol (for testing), else real URL
                 let url = DATA_URL;
                 if (window.location.protocol === 'file:') {
-                    // alert("Note: Fetching local sample data for testing purposes.");
                     // For local dev without server, you might need to handle this differently or disable CORS in browser
                     // Falling back to empty array or mock if fetch fails is handled in catch
                 }
@@ -132,8 +155,8 @@
                 document.getElementById('lastUpdated').innerText = 'Updated: ' + moment().format('HMS');
                 document.getElementById('totalVisits').innerText = 'Total Visits: ' + rawData.length;
 
-                renderTable();
-                updateCharts();
+                initMap();
+                renderDashboard();
 
             } catch (e) {
                 console.error(e);
@@ -141,10 +164,27 @@
             }
         }
 
+        function initMap() {
+            if (map) return;
+            map = L.map('map').setView([20, 0], 2);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+        }
+
+        // Helper to determine device type
+        function getDeviceType(row) {
+            const ua = (row.userAgent || '').toLowerCase();
+            if (ua.includes('bot') || ua.includes('crawl') || ua.includes('ahrefs')) return 'bot';
+            if (ua.includes('iphone') || ua.includes('android') || ua.includes('mobile')) return 'mobile';
+            return 'desktop';
+        }
+
         function filterData() {
             const sourceQ = document.getElementById('filterSource').value.toLowerCase();
             const ipQ = document.getElementById('filterIP').value.toLowerCase();
             const platformQ = document.getElementById('filterPlatform').value.toLowerCase();
+            const deviceQ = document.getElementById('filterDevice').value; // 'mobile', 'desktop', 'bot'
             const timeQ = document.getElementById('filterTime').value;
 
             const now = moment();
@@ -158,11 +198,15 @@
                 const ip = (row.ip || 'unknown').toLowerCase();
                 const platform = (q.platform || row.userAgent || 'unknown').toLowerCase();
                 const ts = moment(row.timestamp);
+                const deviceType = getDeviceType(row);
 
                 // Text Filters
                 if (sourceQ && !source.includes(sourceQ)) return false;
                 if (ipQ && !ip.includes(ipQ)) return false;
                 if (platformQ && !platform.includes(platformQ)) return false;
+
+                // Device Filter
+                if (deviceQ && deviceType !== deviceQ) return false;
 
                 // Time Filter
                 if (timeQ === '24h' && now.diff(ts, 'hours') > 24) return false;
@@ -173,8 +217,61 @@
             });
         }
 
-        function renderTable() {
+        function renderDashboard() {
             const filtered = filterData();
+            renderTable(filtered);
+            updateCharts(filtered);
+            updateMap(filtered);
+        }
+
+        function updateMap(data) {
+            if (!map) return;
+
+            // Clear existing markers
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+
+            // Group by coordinates (mocking coords based on Country/IP isn't trivial without an external DB)
+            // Since we don't have Lat/Lon in the raw log (only Country Code), we'll do a simplified visualization.
+            // We will use a predefined map of Country Code -> Lat/Lon for major countries to show dots.
+            // For a real production app, you'd want GeoIP lookup on the server side.
+
+            const countryCoords = {
+                'US': [37.0902, -95.7129],
+                'CA': [56.1304, -106.3468],
+                'GB': [55.3781, -3.4360],
+                'DE': [51.1657, 10.4515],
+                'FR': [46.2276, 2.2137],
+                'IN': [20.5937, 78.9629],
+                'CN': [35.8617, 104.1954],
+                'AU': [-25.2744, 133.7751],
+                'BR': [-14.2350, -51.9253],
+                // Add more as needed or use a library
+            };
+
+            data.forEach(row => {
+                const cc = (row.headers?.['cf-ipcountry'] || '').toUpperCase();
+                if (countryCoords[cc]) {
+                    // Add a tiny random jitter so dots don't stack perfectly
+                    const lat = countryCoords[cc][0] + (Math.random() - 0.5) * 5;
+                    const lon = countryCoords[cc][1] + (Math.random() - 0.5) * 10;
+
+                    const marker = L.circleMarker([lat, lon], {
+                        radius: 5,
+                        fillColor: "#3b82f6",
+                        color: "#fff",
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).addTo(map);
+
+                    marker.bindPopup(`<b>${row.ip}</b><br>${moment(row.timestamp).fromNow()}<br>${getDeviceType(row)}`);
+                    markers.push(marker);
+                }
+            });
+        }
+
+        function renderTable(filtered) {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
@@ -201,7 +298,8 @@
                 const city = h['cf-ray'] ? (h['cf-ray'].split('-')[1] || '') : '';
 
                 // Device
-                const isMobile = (row.userAgent || '').includes('Mobile');
+                const isMobile = getDeviceType(row) === 'mobile';
+                const isBot = getDeviceType(row) === 'bot';
                 const startOS = q.platform || ((row.userAgent || '').match(/\(([^)]+)\)/)?.[1] || 'Unknown');
 
                 tr.innerHTML = `
@@ -220,7 +318,7 @@
                     </td>
                      <td class="p-4 border-b">
                         <div class="text-sm truncate max-w-[200px]" title="${startOS}">${startOS}</div>
-                        <div class="text-xs text-gray-500">${isMobile ? 'Mobile' : 'Desktop'}</div>
+                        <div class="text-xs text-gray-500">${isBot ? 'Bot' : (isMobile ? 'Mobile' : 'Desktop')}</div>
                     </td>
                     <td class="p-4 border-b text-xs text-gray-500 space-y-1">
                         ${q.screenWidth ? `<div>Res: ${q.screenWidth}x${q.screenHeight}</div>` : ''}
@@ -237,9 +335,7 @@
             });
         }
 
-        function updateCharts() {
-            const filtered = filterData();
-
+        function updateCharts(filtered) {
             // 1. History Chart (Last 7 Days)
             const days = {};
             for (let i = 6; i >= 0; i--) {
@@ -270,14 +366,9 @@
             // 2. Devices Chart
             const deviceCounts = {};
             filtered.forEach(row => {
-                let cat = 'Desktop';
-                const ua = (row.userAgent || '').toLowerCase();
-                if (ua.includes('iphone') || ua.includes('fban') || ua.includes('fbav')) cat = 'iPhone';
-                else if (ua.includes('android')) cat = 'Android';
-                else if (ua.includes('macintosh')) cat = 'Mac';
-                else if (ua.includes('windows')) cat = 'Windows';
-                else if (ua.includes('bot') || ua.includes('crawl')) cat = 'Bot';
-
+                let cat = getDeviceType(row);
+                // Captainialize
+                cat = cat.charAt(0).toUpperCase() + cat.slice(1);
                 deviceCounts[cat] = (deviceCounts[cat] || 0) + 1;
             });
 
