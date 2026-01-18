@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Analytics Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <style>
+        .json-modal {
+            background: rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-7xl mx-auto space-y-6">
+
+        <!-- Header -->
+        <div class="flex justify-between items-center bg-white p-6 rounded-lg shadow-sm">
+            <h1 class="text-2xl font-bold text-gray-800">Pixel Analytics</h1>
+            <div class="flex gap-4">
+                <button onclick="loadData()"
+                    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                    Refresh Data
+                </button>
+                <div class="text-sm text-gray-500 text-right">
+                    <div id="lastUpdated">Updated: Never</div>
+                    <div id="totalVisits">Total Visits: 0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-white p-6 rounded-lg shadow-sm space-y-4">
+            <h2 class="font-semibold text-gray-700">Filters</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <input type="text" id="filterSource" placeholder="Source (e.g. resume)" class="border p-2 rounded"
+                    onkeyup="renderTable()">
+                <input type="text" id="filterIP" placeholder="IP Address" class="border p-2 rounded"
+                    onkeyup="renderTable()">
+                <input type="text" id="filterPlatform" placeholder="Platform/OS" class="border p-2 rounded"
+                    onkeyup="renderTable()">
+                <select id="filterTime" class="border p-2 rounded" onchange="renderTable()">
+                    <option value="all">All Time</option>
+                    <option value="24h">Last 24 Hours</option>
+                    <option value="7d">Last 7 Days</option>
+                    <option value="30d">Last 30 Days</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+                <h3 class="font-semibold mb-4 text-center">Visits over Time (Last 7 Days)</h3>
+                <canvas id="chartHistory"></canvas>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+                <h3 class="font-semibold mb-4 text-center">Device Distribution</h3>
+                <canvas id="chartDevices"></canvas>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-gray-50 text-gray-600 text-sm uppercase tracking-wider">
+                        <tr>
+                            <th class="p-4 border-b">Time</th>
+                            <th class="p-4 border-b">Source</th>
+                            <th class="p-4 border-b">IP / Location</th>
+                            <th class="p-4 border-b">Device Info</th>
+                            <th class="p-4 border-b">Tech Details</th>
+                            <th class="p-4 border-b">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="text-sm text-gray-700 divide-y divide-gray-100">
+                        <!-- Rows injected here -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="noData" class="p-8 text-center text-gray-500 hidden">No data found matching filters.</div>
+        </div>
+    </div>
+
+    <!-- Modal for JSON Details -->
+    <div id="modal" class="json-modal fixed inset-0 hidden flex items-center justify-center z-50"
+        onclick="closeModal(event)">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-lg">Full Event Details</h3>
+                <button onclick="document.getElementById('modal').classList.add('hidden')"
+                    class="text-gray-500 hover:text-black">&times;</button>
+            </div>
+            <pre id="modalContent" class="bg-gray-100 p-4 rounded text-xs font-mono overflow-x-auto"></pre>
+        </div>
+    </div>
+
+    <script>
+        let rawData = [];
+        let charts = {};
+
+        // Configuration
+        // const DATA_URL = 'visits.json'; // Expects visits.json in SAME directory
+        const DATA_URL = 'https://cowpoints.com/src/php/visits.json'; // Full URL to visits.json
+
+        async function loadData() {
+            try {
+                // Determine URL: Use local sample if file protocol (for testing), else real URL
+                let url = DATA_URL;
+                if (window.location.protocol === 'file:') {
+                    // alert("Note: Fetching local sample data for testing purposes.");
+                    // For local dev without server, you might need to handle this differently or disable CORS in browser
+                    // Falling back to empty array or mock if fetch fails is handled in catch
+                }
+
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Failed to load data");
+
+                const text = await response.text();
+                // Handle concatenated JSON objects (} {) -> [{},{}]
+                const jsonStr = '[' + text.replace(/}\s*\{/g, '},{') + ']';
+                rawData = JSON.parse(jsonStr);
+
+                // Sort by timestamp desc
+                rawData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                document.getElementById('lastUpdated').innerText = 'Updated: ' + moment().format('HMS');
+                document.getElementById('totalVisits').innerText = 'Total Visits: ' + rawData.length;
+
+                renderTable();
+                updateCharts();
+
+            } catch (e) {
+                console.error(e);
+                alert("Error loading data: " + e.message + "\n\nIf you are running this locally (file://), browser security blocks reading local JSON files. Upload both files to your server.");
+            }
+        }
+
+        function filterData() {
+            const sourceQ = document.getElementById('filterSource').value.toLowerCase();
+            const ipQ = document.getElementById('filterIP').value.toLowerCase();
+            const platformQ = document.getElementById('filterPlatform').value.toLowerCase();
+            const timeQ = document.getElementById('filterTime').value;
+
+            const now = moment();
+
+            return rawData.filter(row => {
+                // Extract useful fields safely
+                const q = row.query || {};
+                const h = row.headers || {};
+
+                const source = (q.source || 'web').toLowerCase();
+                const ip = (row.ip || 'unknown').toLowerCase();
+                const platform = (q.platform || row.userAgent || 'unknown').toLowerCase();
+                const ts = moment(row.timestamp);
+
+                // Text Filters
+                if (sourceQ && !source.includes(sourceQ)) return false;
+                if (ipQ && !ip.includes(ipQ)) return false;
+                if (platformQ && !platform.includes(platformQ)) return false;
+
+                // Time Filter
+                if (timeQ === '24h' && now.diff(ts, 'hours') > 24) return false;
+                if (timeQ === '7d' && now.diff(ts, 'days') > 7) return false;
+                if (timeQ === '30d' && now.diff(ts, 'days') > 30) return false;
+
+                return true;
+            });
+        }
+
+        function renderTable() {
+            const filtered = filterData();
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                document.getElementById('noData').classList.remove('hidden');
+            } else {
+                document.getElementById('noData').classList.add('hidden');
+            }
+
+            filtered.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50 transition";
+
+                const q = row.query || {};
+                const h = row.headers || {};
+
+                // Identify Source
+                let sourceBadge = 'bg-gray-200 text-gray-800';
+                let sourceText = q.source || 'Web';
+                if (sourceText.includes('resume')) sourceBadge = 'bg-purple-100 text-purple-800';
+
+                // Location
+                const country = h['cf-ipcountry'] || '??';
+                const city = h['cf-ray'] ? (h['cf-ray'].split('-')[1] || '') : '';
+
+                // Device
+                const isMobile = (row.userAgent || '').includes('Mobile');
+                const startOS = q.platform || ((row.userAgent || '').match(/\(([^)]+)\)/)?.[1] || 'Unknown');
+
+                tr.innerHTML = `
+                    <td class="p-4 border-b">
+                        <div class="font-medium">${moment(row.timestamp).format('MMM D, HH:mm')}</div>
+                        <div class="text-xs text-gray-500">${moment(row.timestamp).fromNow()}</div>
+                    </td>
+                    <td class="p-4 border-b">
+                        <span class="px-2 py-1 rounded text-xs font-semibold ${sourceBadge}">
+                            ${sourceText}
+                        </span>
+                    </td>
+                    <td class="p-4 border-b">
+                        <div class="font-mono text-xs">${row.ip || 'Unknown'}</div>
+                        <div class="text-xs text-gray-500">${country} ${city}</div>
+                    </td>
+                     <td class="p-4 border-b">
+                        <div class="text-sm truncate max-w-[200px]" title="${startOS}">${startOS}</div>
+                        <div class="text-xs text-gray-500">${isMobile ? 'Mobile' : 'Desktop'}</div>
+                    </td>
+                    <td class="p-4 border-b text-xs text-gray-500 space-y-1">
+                        ${q.screenWidth ? `<div>Res: ${q.screenWidth}x${q.screenHeight}</div>` : ''}
+                        ${q.batteryLevel ? `<div>Bat: ${(q.batteryLevel * 100).toFixed(0)}%</div>` : ''}
+                        ${q.gpuVendor ? `<div title="${q.gpuRenderer}">GPU: ${q.gpuRenderer.substring(0, 20)}...</div>` : ''}
+                    </td>
+                    <td class="p-4 border-b">
+                        <button onclick='showJson(${JSON.stringify(row).replace(/'/g, "&#39;")})' class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                            View JSON
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateCharts() {
+            const filtered = filterData();
+
+            // 1. History Chart (Last 7 Days)
+            const days = {};
+            for (let i = 6; i >= 0; i--) {
+                days[moment().subtract(i, 'days').format('YYYY-MM-DD')] = 0;
+            }
+            filtered.forEach(row => {
+                const date = moment(row.timestamp).format('YYYY-MM-DD');
+                if (days[date] !== undefined) days[date]++;
+            });
+
+            if (charts.history) charts.history.destroy();
+            charts.history = new Chart(document.getElementById('chartHistory'), {
+                type: 'line',
+                data: {
+                    labels: Object.keys(days).map(d => moment(d).format('MMM D')),
+                    datasets: [{
+                        label: 'Visits',
+                        data: Object.values(days),
+                        borderColor: 'rgb(59, 130, 246)',
+                        tension: 0.1,
+                        fill: true,
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)'
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+
+            // 2. Devices Chart
+            const deviceCounts = {};
+            filtered.forEach(row => {
+                let cat = 'Desktop';
+                const ua = (row.userAgent || '').toLowerCase();
+                if (ua.includes('iphone') || ua.includes('fban') || ua.includes('fbav')) cat = 'iPhone';
+                else if (ua.includes('android')) cat = 'Android';
+                else if (ua.includes('macintosh')) cat = 'Mac';
+                else if (ua.includes('windows')) cat = 'Windows';
+                else if (ua.includes('bot') || ua.includes('crawl')) cat = 'Bot';
+
+                deviceCounts[cat] = (deviceCounts[cat] || 0) + 1;
+            });
+
+            if (charts.devices) charts.devices.destroy();
+            charts.devices = new Chart(document.getElementById('chartDevices'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(deviceCounts),
+                    datasets: [{
+                        data: Object.values(deviceCounts),
+                        backgroundColor: [
+                            '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#6b7280'
+                        ]
+                    }]
+                },
+                options: { responsive: true }
+            });
+        }
+
+        function showJson(data) {
+            document.getElementById('modalContent').textContent = JSON.stringify(data, null, 2);
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function closeModal(e) {
+            if (e.target.id === 'modal') {
+                document.getElementById('modal').classList.add('hidden');
+            }
+        }
+
+        // Init
+        loadData();
+    </script>
+</body>
+
+</html>
