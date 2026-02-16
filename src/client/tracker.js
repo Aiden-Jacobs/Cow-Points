@@ -19,7 +19,8 @@
  */
 
 const CONFIG = {
-    TRACKING_ENDPOINT: 'https://cowpoints.com/src/php/pixel.php',
+    // For production, change to absolute URL: 'https://your-domain.com/src/php/pixel.php'
+    TRACKING_ENDPOINT: 'src/php/pixel.php',
     // Delay (ms) before sending pixel — gives time for mouse/interaction
     SEND_DELAY: 1500,
 };
