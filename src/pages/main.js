@@ -47,7 +47,7 @@ function addRulesPopup() {
 
     closeModal.addEventListener('click', () => {
       rulesModal.style.display = 'none';
-    });
+    });                                      
 
     // Close modal on outside click
     window.addEventListener('click', (e) => {

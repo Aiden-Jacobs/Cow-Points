@@ -9,227 +9,504 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <style>
-        .json-modal {
-            background: rgba(0, 0, 0, 0.5);
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.3);
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+        }
+
+        .score-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            letter-spacing: 0.025em;
+        }
+
+        .score-human {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .score-suspicious {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .score-bot {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .cluster-tag {
+            font-family: 'Courier New', monospace;
+            font-size: 0.7rem;
+            padding: 1px 6px;
+            border-radius: 4px;
+            background: #e0e7ff;
+            color: #3730a3;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .cluster-tag:hover {
+            background: #c7d2fe;
+        }
+
+        .suspicion-high {
+            border-left: 4px solid #ef4444;
+        }
+
+        .suspicion-medium {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .suspicion-low {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .suspicion-none {
+            border-left: 4px solid #6b7280;
+        }
+
+        .confidence-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+
+        .conf-high {
+            background: #10b981;
+        }
+
+        .conf-medium {
+            background: #f59e0b;
+        }
+
+        .conf-low {
+            background: #ef4444;
+        }
+
+        .tab-btn {
+            padding: 8px 20px;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            color: #64748b;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            border-bottom-color: #3b82f6;
+            color: #1e293b;
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: #334155;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+            backdrop-filter: blur(8px);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        tr {
+            transition: background 0.15s;
         }
     </style>
 </head>
 
-<body class="bg-gray-100 min-h-screen p-8">
+<body class="p-4 md:p-8">
     <div class="max-w-7xl mx-auto space-y-6">
 
-        <!-- Header -->
-        <div class="flex justify-between items-center bg-white p-6 rounded-lg shadow-sm">
-            <h1 class="text-2xl font-bold text-gray-800">Pixel Analytics</h1>
-            <div class="flex gap-4">
+        <!-- ─── Header ─────────────────────────────────────────────── -->
+        <div
+            class="glass-card p-6 rounded-xl shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                    <span class="text-3xl">📡</span> Pixel Analytics
+                </h1>
+                <p class="text-sm text-gray-500 mt-1">Bot Detection · Cluster Analysis · Geolocation</p>
+            </div>
+            <div class="flex items-center gap-4">
                 <button onclick="loadData()"
-                    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                    Refresh Data
+                    class="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-sm">
+                    ↻ Refresh
                 </button>
-                <div class="text-sm text-gray-500 text-right">
+                <div class="text-sm text-gray-500 text-right leading-relaxed">
                     <div id="lastUpdated">Updated: Never</div>
                     <div id="totalVisits">Total Visits: 0</div>
                 </div>
             </div>
         </div>
 
-        <!-- Filters -->
-        <div class="bg-white p-6 rounded-lg shadow-sm space-y-4">
-            <h2 class="font-semibold text-gray-700">Filters</h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <input type="text" id="filterSource" placeholder="Source (e.g. resume)" class="border p-2 rounded"
+        <!-- ─── Stat Cards ─────────────────────────────────────────── -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div class="stat-card p-4 rounded-xl shadow-sm text-center">
+                <div id="statTotal" class="text-3xl font-bold text-gray-800">0</div>
+                <div class="text-xs text-gray-500 mt-1 font-medium">Total Visits</div>
+            </div>
+            <div class="stat-card p-4 rounded-xl shadow-sm text-center">
+                <div id="statHuman" class="text-3xl font-bold text-green-600">0</div>
+                <div class="text-xs text-gray-500 mt-1 font-medium">Human</div>
+            </div>
+            <div class="stat-card p-4 rounded-xl shadow-sm text-center">
+                <div id="statSuspicious" class="text-3xl font-bold text-amber-500">0</div>
+                <div class="text-xs text-gray-500 mt-1 font-medium">Suspicious</div>
+            </div>
+            <div class="stat-card p-4 rounded-xl shadow-sm text-center">
+                <div id="statBot" class="text-3xl font-bold text-red-600">0</div>
+                <div class="text-xs text-gray-500 mt-1 font-medium">Bot</div>
+            </div>
+            <div class="stat-card p-4 rounded-xl shadow-sm text-center">
+                <div id="statClusters" class="text-3xl font-bold text-indigo-600">0</div>
+                <div class="text-xs text-gray-500 mt-1 font-medium">Clusters</div>
+            </div>
+        </div>
+
+        <!-- ─── Filters ────────────────────────────────────────────── -->
+        <div class="glass-card p-5 rounded-xl shadow-sm">
+            <h2 class="font-semibold text-gray-700 mb-3 text-sm uppercase tracking-wider">Filters</h2>
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-3">
+                <input type="text" id="filterSource" placeholder="Source"
+                    class="border border-gray-200 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none"
                     onkeyup="renderTable()">
-                <input type="text" id="filterIP" placeholder="IP Address" class="border p-2 rounded"
+                <input type="text" id="filterIP" placeholder="IP Address"
+                    class="border border-gray-200 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none"
                     onkeyup="renderTable()">
-                <input type="text" id="filterPlatform" placeholder="Platform/OS" class="border p-2 rounded"
+                <input type="text" id="filterPlatform" placeholder="Platform/OS"
+                    class="border border-gray-200 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none"
                     onkeyup="renderTable()">
-                <select id="filterTime" class="border p-2 rounded" onchange="renderTable()">
+                <select id="filterTime"
+                    class="border border-gray-200 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 outline-none"
+                    onchange="renderTable()">
                     <option value="all">All Time</option>
                     <option value="24h">Last 24 Hours</option>
                     <option value="7d">Last 7 Days</option>
                     <option value="30d">Last 30 Days</option>
                 </select>
+                <select id="filterClassification"
+                    class="border border-gray-200 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 outline-none"
+                    onchange="renderTable()">
+                    <option value="all">All Classifications</option>
+                    <option value="human">✅ Human</option>
+                    <option value="suspicious">⚠️ Suspicious</option>
+                    <option value="bot">🤖 Bot</option>
+                </select>
+                <input type="text" id="filterCountry" placeholder="Country"
+                    class="border border-gray-200 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none"
+                    onkeyup="renderTable()">
             </div>
         </div>
 
-        <!-- Charts -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-                <h3 class="font-semibold mb-4 text-center">Visits over Time (Last 7 Days)</h3>
-                <canvas id="chartHistory"></canvas>
+        <!-- ─── Tabs ───────────────────────────────────────────────── -->
+        <div class="glass-card rounded-xl shadow-sm overflow-hidden">
+            <div class="flex border-b border-gray-200 bg-white/80 px-4">
+                <button class="tab-btn active" onclick="switchTab('visitors', this)">Visitors</button>
+                <button class="tab-btn" onclick="switchTab('clusters', this)">Clusters</button>
+                <button class="tab-btn" onclick="switchTab('charts', this)">Charts</button>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-                <h3 class="font-semibold mb-4 text-center">Device Distribution</h3>
-                <canvas id="chartDevices"></canvas>
-            </div>
-        </div>
 
-        <!-- Data Table -->
-        <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-50 text-gray-600 text-sm uppercase tracking-wider">
-                        <tr>
-                            <th class="p-4 border-b">Time</th>
-                            <th class="p-4 border-b">Source</th>
-                            <th class="p-4 border-b">IP / Location</th>
-                            <th class="p-4 border-b">Device Info</th>
-                            <th class="p-4 border-b">Tech Details</th>
-                            <th class="p-4 border-b">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody" class="text-sm text-gray-700 divide-y divide-gray-100">
-                        <!-- Rows injected here -->
-                    </tbody>
-                </table>
+            <!-- Tab: Visitors -->
+            <div id="tabVisitors" class="tab-content">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-gray-50/80 text-gray-500 text-xs uppercase tracking-wider">
+                            <tr>
+                                <th class="p-4 border-b font-semibold">Time</th>
+                                <th class="p-4 border-b font-semibold">Source</th>
+                                <th class="p-4 border-b font-semibold">Bot Score</th>
+                                <th class="p-4 border-b font-semibold">Location</th>
+                                <th class="p-4 border-b font-semibold">Device</th>
+                                <th class="p-4 border-b font-semibold">Cluster</th>
+                                <th class="p-4 border-b font-semibold">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody" class="text-sm text-gray-700 divide-y divide-gray-100">
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noData" class="p-8 text-center text-gray-400 hidden">No data found matching filters.</div>
             </div>
-            <div id="noData" class="p-8 text-center text-gray-500 hidden">No data found matching filters.</div>
+
+            <!-- Tab: Clusters -->
+            <div id="tabClusters" class="tab-content hidden p-6">
+                <div id="clusterContent" class="space-y-3"></div>
+                <div id="noClusters" class="p-8 text-center text-gray-400 hidden">No clusters detected yet.</div>
+            </div>
+
+            <!-- Tab: Charts -->
+            <div id="tabCharts" class="tab-content hidden p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white/60 p-5 rounded-lg">
+                        <h3 class="font-semibold mb-4 text-center text-gray-600 text-sm">Visits Over Time (7 Days)</h3>
+                        <canvas id="chartHistory"></canvas>
+                    </div>
+                    <div class="bg-white/60 p-5 rounded-lg">
+                        <h3 class="font-semibold mb-4 text-center text-gray-600 text-sm">Bot Classification</h3>
+                        <canvas id="chartBotDist"></canvas>
+                    </div>
+                    <div class="bg-white/60 p-5 rounded-lg">
+                        <h3 class="font-semibold mb-4 text-center text-gray-600 text-sm">Devices</h3>
+                        <canvas id="chartDevices"></canvas>
+                    </div>
+                    <div class="bg-white/60 p-5 rounded-lg">
+                        <h3 class="font-semibold mb-4 text-center text-gray-600 text-sm">Top Countries</h3>
+                        <canvas id="chartCountries"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Modal for JSON Details -->
-    <div id="modal" class="json-modal fixed inset-0 hidden flex items-center justify-center z-50"
+    <!-- ─── Modal ──────────────────────────────────────────────────── -->
+    <div id="modal" class="modal-backdrop fixed inset-0 hidden flex items-center justify-center z-50"
         onclick="closeModal(event)">
-        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
+        <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-lg">Full Event Details</h3>
+                <h3 class="font-bold text-lg text-gray-800" id="modalTitle">Event Details</h3>
                 <button onclick="document.getElementById('modal').classList.add('hidden')"
-                    class="text-gray-500 hover:text-black">&times;</button>
+                    class="text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
             </div>
-            <pre id="modalContent" class="bg-gray-100 p-4 rounded text-xs font-mono overflow-x-auto"></pre>
+            <pre id="modalContent"
+                class="bg-gray-50 p-4 rounded-lg text-xs font-mono overflow-x-auto border border-gray-200"></pre>
         </div>
     </div>
 
     <script>
         let rawData = [];
+        let clusterData = [];
         let charts = {};
 
-        // Configuration
-        // const DATA_URL = 'visits.json'; // Expects visits.json in SAME directory
-        const DATA_URL = 'https://cowpoints.com/src/php/visits.json'; // Full URL to visits.json
+        const DATA_URL = 'https://cowpoints.com/src/php/visits.json';
+        const CLUSTER_URL = 'https://cowpoints.com/src/php/clusters.json';
+
+        /* ────────────────────────────────────────────────────────────── */
+        /*  Tab Switching                                                 */
+        /* ────────────────────────────────────────────────────────────── */
+
+        function switchTab(tab, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
+            btn.classList.add('active');
+            if (tab === 'charts') updateCharts();
+            if (tab === 'clusters') renderClusters();
+        }
+
+        /* ────────────────────────────────────────────────────────────── */
+        /*  Load Data                                                     */
+        /* ────────────────────────────────────────────────────────────── */
 
         async function loadData() {
             try {
-                // Determine URL: Use local sample if file protocol (for testing), else real URL
-                let url = DATA_URL;
-                if (window.location.protocol === 'file:') {
-                    // alert("Note: Fetching local sample data for testing purposes.");
-                    // For local dev without server, you might need to handle this differently or disable CORS in browser
-                    // Falling back to empty array or mock if fetch fails is handled in catch
+                const [visitRes, clusterRes] = await Promise.allSettled([
+                    fetch(DATA_URL),
+                    fetch(CLUSTER_URL),
+                ]);
+
+                // Parse visits
+                if (visitRes.status === 'fulfilled' && visitRes.value.ok) {
+                    const text = await visitRes.value.text();
+                    const jsonStr = '[' + text.replace(/}\s*\{/g, '},{') + ']';
+                    rawData = JSON.parse(jsonStr);
+                    rawData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 }
 
-                const response = await fetch(url);
-                if (!response.ok) throw new Error("Failed to load data");
+                // Parse clusters
+                if (clusterRes.status === 'fulfilled' && clusterRes.value.ok) {
+                    const cj = await clusterRes.value.json();
+                    clusterData = cj.clusters || [];
+                }
 
-                const text = await response.text();
-                // Handle concatenated JSON objects (} {) -> [{},{}]
-                const jsonStr = '[' + text.replace(/}\s*\{/g, '},{') + ']';
-                rawData = JSON.parse(jsonStr);
-
-                // Sort by timestamp desc
-                rawData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-                document.getElementById('lastUpdated').innerText = 'Updated: ' + moment().format('HMS');
+                document.getElementById('lastUpdated').innerText = 'Updated: ' + moment().format('HH:mm:ss');
                 document.getElementById('totalVisits').innerText = 'Total Visits: ' + rawData.length;
 
+                updateStats();
                 renderTable();
-                updateCharts();
 
             } catch (e) {
                 console.error(e);
-                alert("Error loading data: " + e.message + "\n\nIf you are running this locally (file://), browser security blocks reading local JSON files. Upload both files to your server.");
+                alert('Error loading data: ' + e.message);
             }
         }
 
-        function filterData() {
-            const sourceQ = document.getElementById('filterSource').value.toLowerCase();
-            const ipQ = document.getElementById('filterIP').value.toLowerCase();
-            const platformQ = document.getElementById('filterPlatform').value.toLowerCase();
-            const timeQ = document.getElementById('filterTime').value;
+        /* ────────────────────────────────────────────────────────────── */
+        /*  Stats                                                         */
+        /* ────────────────────────────────────────────────────────────── */
 
+        function updateStats() {
+            let human = 0, suspicious = 0, bot = 0;
+            rawData.forEach(r => {
+                const cls = r.botClassification || classify(r.botScore);
+                if (cls === 'human') human++;
+                else if (cls === 'suspicious') suspicious++;
+                else bot++;
+            });
+
+            document.getElementById('statTotal').textContent = rawData.length;
+            document.getElementById('statHuman').textContent = human;
+            document.getElementById('statSuspicious').textContent = suspicious;
+            document.getElementById('statBot').textContent = bot;
+            document.getElementById('statClusters').textContent = clusterData.length;
+        }
+
+        function classify(score) {
+            if (score == null) return 'unknown';
+            if (score >= 70) return 'human';
+            if (score >= 30) return 'suspicious';
+            return 'bot';
+        }
+
+        /* ────────────────────────────────────────────────────────────── */
+        /*  Filter                                                        */
+        /* ────────────────────────────────────────────────────────────── */
+
+        function filterData() {
+            const sQ = document.getElementById('filterSource').value.toLowerCase();
+            const ipQ = document.getElementById('filterIP').value.toLowerCase();
+            const pQ = document.getElementById('filterPlatform').value.toLowerCase();
+            const tQ = document.getElementById('filterTime').value;
+            const cQ = document.getElementById('filterClassification').value;
+            const coQ = document.getElementById('filterCountry').value.toLowerCase();
             const now = moment();
 
             return rawData.filter(row => {
-                // Extract useful fields safely
                 const q = row.query || {};
-                const h = row.headers || {};
-
                 const source = (q.source || 'web').toLowerCase();
-                const ip = (row.ip || 'unknown').toLowerCase();
-                const platform = (q.platform || row.userAgent || 'unknown').toLowerCase();
+                const ip = (row.ip || '').toLowerCase();
+                const platform = (q.platform || row.userAgent || '').toLowerCase();
                 const ts = moment(row.timestamp);
+                const cls = row.botClassification || classify(row.botScore);
 
-                // Text Filters
-                if (sourceQ && !source.includes(sourceQ)) return false;
+                // Location
+                const loc = row.location || {};
+                const country = (loc.country || loc.countryCode || '').toLowerCase();
+
+                if (sQ && !source.includes(sQ)) return false;
                 if (ipQ && !ip.includes(ipQ)) return false;
-                if (platformQ && !platform.includes(platformQ)) return false;
+                if (pQ && !platform.includes(pQ)) return false;
+                if (cQ !== 'all' && cls !== cQ) return false;
+                if (coQ && !country.includes(coQ)) return false;
 
-                // Time Filter
-                if (timeQ === '24h' && now.diff(ts, 'hours') > 24) return false;
-                if (timeQ === '7d' && now.diff(ts, 'days') > 7) return false;
-                if (timeQ === '30d' && now.diff(ts, 'days') > 30) return false;
+                if (tQ === '24h' && now.diff(ts, 'hours') > 24) return false;
+                if (tQ === '7d' && now.diff(ts, 'days') > 7) return false;
+                if (tQ === '30d' && now.diff(ts, 'days') > 30) return false;
 
                 return true;
             });
         }
+
+        /* ────────────────────────────────────────────────────────────── */
+        /*  Render: Visitors Table                                        */
+        /* ────────────────────────────────────────────────────────────── */
 
         function renderTable() {
             const filtered = filterData();
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
-            if (filtered.length === 0) {
-                document.getElementById('noData').classList.remove('hidden');
-            } else {
-                document.getElementById('noData').classList.add('hidden');
-            }
+            document.getElementById('noData').classList.toggle('hidden', filtered.length > 0);
 
             filtered.forEach(row => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-50 transition";
+                tr.className = 'hover:bg-blue-50/40 transition';
 
                 const q = row.query || {};
-                const h = row.headers || {};
+                const loc = row.location || {};
+                const cls = row.botClassification || classify(row.botScore);
+                const score = row.botScore != null ? row.botScore : '?';
 
-                // Identify Source
-                let sourceBadge = 'bg-gray-200 text-gray-800';
-                let sourceText = q.source || 'Web';
-                if (sourceText.includes('resume')) sourceBadge = 'bg-purple-100 text-purple-800';
+                // Source badge
+                let srcBadge = 'bg-gray-100 text-gray-600';
+                let srcText = q.source || 'web';
+                if (srcText.includes('resume')) srcBadge = 'bg-purple-100 text-purple-700';
+
+                // Bot score badge
+                let scoreBadge = 'score-bot';
+                let scoreIcon = '🤖';
+                if (cls === 'human') { scoreBadge = 'score-human'; scoreIcon = '✅'; }
+                else if (cls === 'suspicious') { scoreBadge = 'score-suspicious'; scoreIcon = '⚠️'; }
 
                 // Location
-                const country = h['cf-ipcountry'] || '??';
-                const city = h['cf-ray'] ? (h['cf-ray'].split('-')[1] || '') : '';
+                const city = loc.city || '';
+                const region = loc.region || '';
+                const country = loc.country || loc.countryCode || '??';
+                const conf = loc.confidence || 0;
+                let confClass = 'conf-low';
+                if (conf >= 0.7) confClass = 'conf-high';
+                else if (conf >= 0.4) confClass = 'conf-medium';
+                const locParts = [city, region, country].filter(Boolean);
+                const locStr = locParts.join(', ') || 'Unknown';
+                const locSrc = loc.source || '';
 
                 // Device
                 const isMobile = (row.userAgent || '').includes('Mobile');
-                const startOS = q.platform || ((row.userAgent || '').match(/\(([^)]+)\)/)?.[1] || 'Unknown');
+                const osLabel = q.platform || ((row.userAgent || '').match(/\(([^)]+)\)/)?.[1] || 'Unknown');
+
+                // Cluster
+                const clusterKey = row.clusterKey || '';
 
                 tr.innerHTML = `
                     <td class="p-4 border-b">
-                        <div class="font-medium">${moment(row.timestamp).format('MMM D, HH:mm')}</div>
-                        <div class="text-xs text-gray-500">${moment(row.timestamp).fromNow()}</div>
+                        <div class="font-medium text-gray-800">${moment(row.timestamp).format('MMM D, HH:mm')}</div>
+                        <div class="text-xs text-gray-400">${moment(row.timestamp).fromNow()}</div>
                     </td>
                     <td class="p-4 border-b">
-                        <span class="px-2 py-1 rounded text-xs font-semibold ${sourceBadge}">
-                            ${sourceText}
-                        </span>
+                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${srcBadge}">${srcText}</span>
                     </td>
                     <td class="p-4 border-b">
-                        <div class="font-mono text-xs">${row.ip || 'Unknown'}</div>
-                        <div class="text-xs text-gray-500">${country} ${city}</div>
-                    </td>
-                     <td class="p-4 border-b">
-                        <div class="text-sm truncate max-w-[200px]" title="${startOS}">${startOS}</div>
-                        <div class="text-xs text-gray-500">${isMobile ? 'Mobile' : 'Desktop'}</div>
-                    </td>
-                    <td class="p-4 border-b text-xs text-gray-500 space-y-1">
-                        ${q.screenWidth ? `<div>Res: ${q.screenWidth}x${q.screenHeight}</div>` : ''}
-                        ${q.batteryLevel ? `<div>Bat: ${(q.batteryLevel * 100).toFixed(0)}%</div>` : ''}
-                        ${q.gpuVendor ? `<div title="${q.gpuRenderer}">GPU: ${q.gpuRenderer.substring(0, 20)}...</div>` : ''}
+                        <span class="score-badge ${scoreBadge}">${scoreIcon} ${score}</span>
                     </td>
                     <td class="p-4 border-b">
-                        <button onclick='showJson(${JSON.stringify(row).replace(/'/g, "&#39;")})' class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                            View JSON
+                        <div class="flex items-center">
+                            <span class="confidence-dot ${confClass}" title="Confidence: ${(conf * 100).toFixed(0)}% (${locSrc})"></span>
+                            <span class="text-sm">${locStr}</span>
+                        </div>
+                        <div class="text-xs text-gray-400 font-mono">${row.ip || ''}</div>
+                    </td>
+                    <td class="p-4 border-b">
+                        <div class="text-sm truncate max-w-[180px]" title="${osLabel}">${osLabel}</div>
+                        <div class="text-xs text-gray-400">${isMobile ? '📱 Mobile' : '🖥️ Desktop'}</div>
+                    </td>
+                    <td class="p-4 border-b">
+                        ${clusterKey
+                        ? `<span class="cluster-tag" onclick="filterByCluster('${clusterKey}')" title="Click to filter">${clusterKey}</span>`
+                        : '<span class="text-xs text-gray-300">—</span>'}
+                    </td>
+                    <td class="p-4 border-b">
+                        <button onclick='showJson(${JSON.stringify(row).replace(/'/g, "&#39;")})'
+                            class="text-blue-500 hover:text-blue-700 text-sm font-medium transition">
+                            View
                         </button>
                     </td>
                 `;
@@ -237,17 +514,112 @@
             });
         }
 
+        function filterByCluster(key) {
+            document.getElementById('filterIP').value = '';
+            document.getElementById('filterSource').value = '';
+            // Filter table to show only matching cluster
+            renderTableFiltered(row => (row.clusterKey || '') === key);
+        }
+
+        function renderTableFiltered(predicate) {
+            const filtered = rawData.filter(predicate);
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            document.getElementById('noData').classList.toggle('hidden', filtered.length > 0);
+
+            filtered.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-blue-50/40 transition bg-indigo-50/30';
+                const q = row.query || {};
+                const loc = row.location || {};
+                const cls = row.botClassification || classify(row.botScore);
+                const score = row.botScore != null ? row.botScore : '?';
+
+                let scoreBadge = 'score-bot', scoreIcon = '🤖';
+                if (cls === 'human') { scoreBadge = 'score-human'; scoreIcon = '✅'; }
+                else if (cls === 'suspicious') { scoreBadge = 'score-suspicious'; scoreIcon = '⚠️'; }
+
+                const locParts = [loc.city, loc.region, loc.country || loc.countryCode].filter(Boolean);
+                const locStr = locParts.join(', ') || 'Unknown';
+
+                tr.innerHTML = `
+                    <td class="p-4 border-b font-medium">${moment(row.timestamp).format('MMM D, HH:mm')}</td>
+                    <td class="p-4 border-b"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100">${q.source || 'web'}</span></td>
+                    <td class="p-4 border-b"><span class="score-badge ${scoreBadge}">${scoreIcon} ${score}</span></td>
+                    <td class="p-4 border-b">${locStr}<div class="text-xs text-gray-400 font-mono">${row.ip || ''}</div></td>
+                    <td class="p-4 border-b text-sm">${q.platform || 'Unknown'}</td>
+                    <td class="p-4 border-b"><span class="cluster-tag">${row.clusterKey || '—'}</span></td>
+                    <td class="p-4 border-b">
+                        <button onclick='showJson(${JSON.stringify(row).replace(/'/g, "&#39;")})' class="text-blue-500 hover:text-blue-700 text-sm font-medium">View</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* ────────────────────────────────────────────────────────────── */
+        /*  Render: Clusters                                              */
+        /* ────────────────────────────────────────────────────────────── */
+
+        function renderClusters() {
+            const content = document.getElementById('clusterContent');
+            content.innerHTML = '';
+
+            if (!clusterData || clusterData.length === 0) {
+                document.getElementById('noClusters').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('noClusters').classList.add('hidden');
+
+            // Sort: highest visit count first
+            const sorted = [...clusterData].sort((a, b) => b.visitCount - a.visitCount);
+
+            sorted.forEach(cl => {
+                const susp = cl.suspicionLevel || 'none';
+                const div = document.createElement('div');
+                div.className = `bg-white/80 p-4 rounded-lg shadow-sm suspicion-${susp} cursor-pointer hover:shadow-md transition`;
+
+                const fp = cl.fingerprint || {};
+                div.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span class="cluster-tag text-sm">${cl.id}</span>
+                            <span class="ml-2 text-xs text-gray-500">
+                                ${cl.visitCount} visit${cl.visitCount !== 1 ? 's' : ''} ·
+                                ${susp} suspicion
+                            </span>
+                        </div>
+                        <div class="text-xs text-gray-400">
+                            ${cl.firstSeen ? moment(cl.firstSeen).format('MMM D') : '?'} — ${cl.lastSeen ? moment(cl.lastSeen).format('MMM D HH:mm') : '?'}
+                        </div>
+                    </div>
+                    <div class="mt-2 text-xs text-gray-500 flex flex-wrap gap-4">
+                        <span>Canvas: <code>${fp.canvasHash || '—'}</code></span>
+                        <span>GPU: <code>${(fp.gpuRenderer || '—').substring(0, 35)}</code></span>
+                        <span>IP Prefix: <code>${fp.ipPrefix || '—'}</code></span>
+                    </div>
+                `;
+
+                div.onclick = () => filterByCluster(cl.id);
+                content.appendChild(div);
+            });
+        }
+
+        /* ────────────────────────────────────────────────────────────── */
+        /*  Charts                                                        */
+        /* ────────────────────────────────────────────────────────────── */
+
         function updateCharts() {
             const filtered = filterData();
 
-            // 1. History Chart (Last 7 Days)
+            // ── History Chart ──
             const days = {};
             for (let i = 6; i >= 0; i--) {
                 days[moment().subtract(i, 'days').format('YYYY-MM-DD')] = 0;
             }
             filtered.forEach(row => {
-                const date = moment(row.timestamp).format('YYYY-MM-DD');
-                if (days[date] !== undefined) days[date]++;
+                const d = moment(row.timestamp).format('YYYY-MM-DD');
+                if (days[d] !== undefined) days[d]++;
             });
 
             if (charts.history) charts.history.destroy();
@@ -259,45 +631,108 @@
                         label: 'Visits',
                         data: Object.values(days),
                         borderColor: 'rgb(59, 130, 246)',
-                        tension: 0.1,
+                        backgroundColor: 'rgba(59, 130, 246, 0.08)',
+                        tension: 0.3,
                         fill: true,
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)'
+                        pointRadius: 4,
+                        pointBackgroundColor: '#fff',
+                        pointBorderWidth: 2,
                     }]
                 },
                 options: { responsive: true, plugins: { legend: { display: false } } }
             });
 
-            // 2. Devices Chart
-            const deviceCounts = {};
+            // ── Bot Classification Doughnut ──
+            let hCount = 0, sCount = 0, bCount = 0;
+            filtered.forEach(r => {
+                const c = r.botClassification || classify(r.botScore);
+                if (c === 'human') hCount++;
+                else if (c === 'suspicious') sCount++;
+                else bCount++;
+            });
+
+            if (charts.botDist) charts.botDist.destroy();
+            charts.botDist = new Chart(document.getElementById('chartBotDist'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Human', 'Suspicious', 'Bot'],
+                    datasets: [{
+                        data: [hCount, sCount, bCount],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                        borderWidth: 0,
+                    }]
+                },
+                options: { responsive: true, cutout: '60%' }
+            });
+
+            // ── Devices ──
+            const devCounts = {};
             filtered.forEach(row => {
                 let cat = 'Desktop';
                 const ua = (row.userAgent || '').toLowerCase();
-                if (ua.includes('iphone') || ua.includes('fban') || ua.includes('fbav')) cat = 'iPhone';
+                if (ua.includes('iphone') || ua.includes('fban')) cat = 'iPhone';
                 else if (ua.includes('android')) cat = 'Android';
                 else if (ua.includes('macintosh')) cat = 'Mac';
                 else if (ua.includes('windows')) cat = 'Windows';
                 else if (ua.includes('bot') || ua.includes('crawl')) cat = 'Bot';
-
-                deviceCounts[cat] = (deviceCounts[cat] || 0) + 1;
+                devCounts[cat] = (devCounts[cat] || 0) + 1;
             });
 
             if (charts.devices) charts.devices.destroy();
             charts.devices = new Chart(document.getElementById('chartDevices'), {
                 type: 'doughnut',
                 data: {
-                    labels: Object.keys(deviceCounts),
+                    labels: Object.keys(devCounts),
                     datasets: [{
-                        data: Object.values(deviceCounts),
-                        backgroundColor: [
-                            '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#6b7280'
-                        ]
+                        data: Object.values(devCounts),
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#6b7280'],
+                        borderWidth: 0,
                     }]
                 },
-                options: { responsive: true }
+                options: { responsive: true, cutout: '60%' }
+            });
+
+            // ── Countries ──
+            const countryCounts = {};
+            filtered.forEach(row => {
+                const loc = row.location || {};
+                const c = loc.country || loc.countryCode || 'Unknown';
+                countryCounts[c] = (countryCounts[c] || 0) + 1;
+            });
+            const topCountries = Object.entries(countryCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 8);
+
+            if (charts.countries) charts.countries.destroy();
+            charts.countries = new Chart(document.getElementById('chartCountries'), {
+                type: 'bar',
+                data: {
+                    labels: topCountries.map(c => c[0]),
+                    datasets: [{
+                        label: 'Visits',
+                        data: topCountries.map(c => c[1]),
+                        backgroundColor: 'rgba(99, 102, 241, 0.7)',
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } },
+                }
             });
         }
 
+        /* ────────────────────────────────────────────────────────────── */
+        /*  Modal                                                         */
+        /* ────────────────────────────────────────────────────────────── */
+
         function showJson(data) {
+            // Pretty-print with score breakdown highlighted
+            const title = data.botClassification
+                ? `Event Details — ${data.botClassification.toUpperCase()} (Score: ${data.botScore})`
+                : 'Event Details';
+            document.getElementById('modalTitle').textContent = title;
             document.getElementById('modalContent').textContent = JSON.stringify(data, null, 2);
             document.getElementById('modal').classList.remove('hidden');
         }
@@ -308,7 +743,10 @@
             }
         }
 
-        // Init
+        /* ────────────────────────────────────────────────────────────── */
+        /*  Init                                                          */
+        /* ────────────────────────────────────────────────────────────── */
+
         loadData();
     </script>
 </body>
