@@ -207,16 +207,16 @@
             <div class="grid grid-cols-2 md:grid-cols-6 gap-3">
                 <input type="text" id="filterSource" placeholder="Source"
                     class="border border-gray-200 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none"
-                    onkeyup="renderTable()">
+                    onkeyup="refreshView()">
                 <input type="text" id="filterIP" placeholder="IP Address"
                     class="border border-gray-200 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none"
-                    onkeyup="renderTable()">
+                    onkeyup="refreshView()">
                 <input type="text" id="filterPlatform" placeholder="Platform/OS"
                     class="border border-gray-200 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none"
-                    onkeyup="renderTable()">
+                    onkeyup="refreshView()">
                 <select id="filterTime"
                     class="border border-gray-200 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 outline-none"
-                    onchange="renderTable()">
+                    onchange="refreshView()">
                     <option value="all">All Time</option>
                     <option value="24h">Last 24 Hours</option>
                     <option value="7d">Last 7 Days</option>
@@ -224,7 +224,7 @@
                 </select>
                 <select id="filterClassification"
                     class="border border-gray-200 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 outline-none"
-                    onchange="renderTable()">
+                    onchange="refreshView()">
                     <option value="all">All Classifications</option>
                     <option value="human">✅ Human</option>
                     <option value="suspicious">⚠️ Suspicious</option>
@@ -232,7 +232,7 @@
                 </select>
                 <input type="text" id="filterCountry" placeholder="Country"
                     class="border border-gray-200 p-2.5 rounded-lg text-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none"
-                    onkeyup="renderTable()">
+                    onkeyup="refreshView()">
             </div>
         </div>
 
@@ -322,9 +322,30 @@
         let rawData = [];
         let clusterData = [];
         let charts = {};
+        let map = null;
+        let markers = [];
 
         const DATA_URL = 'https://cowpoints.com/src/php/visits.json';
         const CLUSTER_URL = 'https://cowpoints.com/src/php/clusters.json';
+
+        // ── Init Leaflet Map ──
+        document.addEventListener('DOMContentLoaded', () => {
+            map = L.map('map').setView([30, 0], 2);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap',
+                maxZoom: 18,
+            }).addTo(map);
+        });
+
+        function getDeviceType(row) {
+            const ua = (row.userAgent || '').toLowerCase();
+            if (ua.includes('iphone') || ua.includes('fban')) return '📱 iPhone';
+            if (ua.includes('android')) return '📱 Android';
+            if (ua.includes('macintosh')) return '🖥️ Mac';
+            if (ua.includes('windows')) return '🖥️ Windows';
+            if (ua.includes('bot') || ua.includes('crawl')) return '🤖 Bot';
+            return '🖥️ Desktop';
+        }
 
         /* ────────────────────────────────────────────────────────────── */
         /*  Tab Switching                                                 */
@@ -335,7 +356,7 @@
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
             btn.classList.add('active');
-            if (tab === 'charts') updateCharts();
+            if (tab === 'charts') updateCharts(filterData());
             if (tab === 'clusters') renderClusters();
         }
 
@@ -368,7 +389,7 @@
                 document.getElementById('totalVisits').innerText = 'Total Visits: ' + rawData.length;
 
                 updateStats();
-                renderTable();
+                refreshView();
 
             } catch (e) {
                 console.error(e);
@@ -443,14 +464,10 @@
         }
 
         /* ────────────────────────────────────────────────────────────── */
-        /*  Render: Visitors Table                                        */
+        /*  Orchestrator — called on load and filter changes              */
         /* ────────────────────────────────────────────────────────────── */
 
-        /* ────────────────────────────────────────────────────────────── */
-        /*  Render: Visitors Table                                        */
-        /* ────────────────────────────────────────────────────────────── */
-
-        function renderTable() {
+        function refreshView() {
             const filtered = filterData();
             renderTable(filtered);
             updateCharts(filtered);
@@ -464,43 +481,57 @@
             markers.forEach(m => map.removeLayer(m));
             markers = [];
 
-            // Group by coordinates (mocking coords based on Country/IP isn't trivial without an external DB)
-            // Since we don't have Lat/Lon in the raw log (only Country Code), we'll do a simplified visualization.
-            // We will use a predefined map of Country Code -> Lat/Lon for major countries to show dots.
-            // For a real production app, you'd want GeoIP lookup on the server side.
-
+            // Country-center fallback coords (used when ipapi lat/lon is missing)
             const countryCoords = {
-                'US': [37.0902, -95.7129],
-                'CA': [56.1304, -106.3468],
-                'GB': [55.3781, -3.4360],
-                'DE': [51.1657, 10.4515],
-                'FR': [46.2276, 2.2137],
-                'IN': [20.5937, 78.9629],
-                'CN': [35.8617, 104.1954],
-                'AU': [-25.2744, 133.7751],
-                'BR': [-14.2350, -51.9253],
-                // Add more as needed or use a library
+                'US': [37.09, -95.71], 'CA': [56.13, -106.35], 'GB': [55.38, -3.44],
+                'DE': [51.17, 10.45], 'FR': [46.23, 2.21], 'IN': [20.59, 78.96],
+                'CN': [35.86, 104.20], 'AU': [-25.27, 133.78], 'BR': [-14.24, -51.93],
+                'JP': [36.20, 138.25], 'KR': [35.91, 127.77], 'MX': [23.63, -102.55],
+                'ES': [40.46, -3.75], 'IT': [41.87, 12.57], 'NL': [52.13, 5.29],
+                'RU': [61.52, 105.32], 'ZA': [-30.56, 22.94], 'NG': [9.08, 8.68],
+                'SG': [1.35, 103.82], 'AE': [23.42, 53.85],
+            };
+
+            // Pick bot-score-based color
+            const scoreColor = (row) => {
+                const cls = row.botClassification || classify(row.botScore);
+                if (cls === 'human') return '#10b981';
+                if (cls === 'suspicious') return '#f59e0b';
+                return '#ef4444';
             };
 
             data.forEach(row => {
-                const cc = (row.headers?.['cf-ipcountry'] || '').toUpperCase();
-                if (countryCoords[cc]) {
-                    // Add a tiny random jitter so dots don't stack perfectly
-                    const lat = countryCoords[cc][0] + (Math.random() - 0.5) * 5;
-                    const lon = countryCoords[cc][1] + (Math.random() - 0.5) * 10;
+                const loc = row.location || {};
+                let lat = loc.latitude;
+                let lon = loc.longitude;
 
-                    const marker = L.circleMarker([lat, lon], {
-                        radius: 5,
-                        fillColor: "#3b82f6",
-                        color: "#fff",
-                        weight: 1,
-                        opacity: 1,
-                        fillOpacity: 0.8
-                    }).addTo(map);
-
-                    marker.bindPopup(`<b>${row.ip}</b><br>${moment(row.timestamp).fromNow()}<br>${getDeviceType(row)}`);
-                    markers.push(marker);
+                // Fallback: use country-center coords with jitter
+                if (lat == null || lon == null) {
+                    const cc = (loc.countryCode || row.headers?.['cf-ipcountry'] || '').toUpperCase();
+                    const center = countryCoords[cc];
+                    if (!center) return;
+                    lat = center[0] + (Math.random() - 0.5) * 5;
+                    lon = center[1] + (Math.random() - 0.5) * 10;
                 }
+
+                const marker = L.circleMarker([lat, lon], {
+                    radius: 5,
+                    fillColor: scoreColor(row),
+                    color: '#fff',
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.8,
+                }).addTo(map);
+
+                const cls = row.botClassification || classify(row.botScore);
+                const score = row.botScore != null ? row.botScore : '?';
+                marker.bindPopup(
+                    `<b>${row.ip || 'Unknown'}</b><br>` +
+                    `${loc.city ? loc.city + ', ' : ''}${loc.country || loc.countryCode || '??'}<br>` +
+                    `Score: ${score} (${cls})<br>` +
+                    `${moment(row.timestamp).fromNow()} · ${getDeviceType(row)}`
+                );
+                markers.push(marker);
             });
         }
 
@@ -682,8 +713,8 @@
         /*  Charts                                                        */
         /* ────────────────────────────────────────────────────────────── */
 
-        function updateCharts() {
-            const filtered = filterData();
+        function updateCharts(filtered) {
+            if (!filtered) filtered = filterData();
 
             // ── History Chart ──
             const days = {};
@@ -820,7 +851,7 @@
         /*  Init                                                          */
         /* ────────────────────────────────────────────────────────────── */
 
-        loadData();
+        document.addEventListener('DOMContentLoaded', loadData);
     </script>
 </body>
 
