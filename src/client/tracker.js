@@ -235,6 +235,35 @@ const CONFIG = {
     };
 
     /* ────────────────────────────────────────────────────────────────── */
+    /*  Enrichment (Username)                                            */
+    /* ────────────────────────────────────────────────────────────────── */
+
+    const getUsername = async () => {
+        if (typeof window.supabase === 'undefined') return null;
+
+        try {
+            const SUPABASE_URL = 'https://sagwqkyampwcuzvllbvm.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhZ3dxa3lhbXB3Y3V6dmxsYnZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyNjI5ODAsImV4cCI6MjA0ODgzODk4MH0.K42LmF79J3ZjKhiCkJd7p-Mc7cbj6sySd9hnNT0Aoxc';
+
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const { data: { session } } = await supabase.auth.getSession();
+
+            if (!session) return null;
+
+            const { data: user } = await supabase
+                .from('users')
+                .select('username')
+                .eq('UID', session.user.id)
+                .single();
+
+            return user ? user.username : null;
+        } catch (e) {
+            console.warn('Tracker: failed to fetch username', e);
+            return null;
+        }
+    };
+
+    /* ────────────────────────────────────────────────────────────────── */
     /*  Send Pixel                                                       */
     /* ────────────────────────────────────────────────────────────────── */
 
@@ -246,6 +275,13 @@ const CONFIG = {
         document.removeEventListener('mousemove', onMouseMove);
 
         const data = await collectData();
+
+        // Add username if available
+        const username = await getUsername();
+        if (username) {
+            data.username = username;
+        }
+
         const params = new URLSearchParams(cleanData(data));
 
         const img = new Image();
