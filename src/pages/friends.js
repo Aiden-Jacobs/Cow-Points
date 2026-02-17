@@ -3,6 +3,7 @@ import { supabase } from '../utils/supabaseClient.js';
 import {
   sendFriendRequest,
   acceptFriendRequest,
+  declineFriendRequest,
   listFriends,
   getPendingFriendRequests,
   createFriendLeaderboard,
@@ -118,6 +119,7 @@ async function displayPendingRequests() {
       const acceptBtn = document.createElement('button');
       acceptBtn.className = 'accept-request-btn';
       acceptBtn.textContent = '+ ADD';
+      acceptBtn.style.marginRight = '10px';
       acceptBtn.onclick = async () => {
         try {
           await acceptFriendRequest(userId.id, req.id);
@@ -134,7 +136,25 @@ async function displayPendingRequests() {
           alert(`Failed to accept friend request: ${err.message}`);
         }
       };
+
+      const declineBtn = document.createElement('button');
+      declineBtn.className = 'decline-request-btn';
+      declineBtn.textContent = 'DECLINE';
+      // Add red styling for decline button
+      declineBtn.style.backgroundColor = '#ff4d4d'; // Red color
+      declineBtn.onclick = async () => {
+        try {
+          if (!confirm(`Are you sure you want to decline the request from ${req.username}?`)) return;
+          await declineFriendRequest(userId.id, req.id);
+          alert(`Friend request from ${req.username} declined.`);
+          li.remove();
+        } catch (err) {
+          alert(`Failed to decline friend request: ${err.message}`);
+        }
+      };
+
       li.appendChild(acceptBtn);
+      li.appendChild(declineBtn);
       ul.appendChild(li);
     });
 

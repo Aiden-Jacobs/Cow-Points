@@ -49,6 +49,22 @@ export async function acceptFriendRequest(currentUserId, requesterId) {
     if (error) throw new Error('Failed to accept friend request');
 }
 
+// Decline a friend request
+/**
+ * this function declines a friend request from the user with the given ID
+ * @param {string} currentUserId - The ID of the current user
+ * @param {string} requesterId - The ID of the user who sent the friend request
+ * @returns {void} - If there is an error, it will throw an error
+ * */
+export async function declineFriendRequest(currentUserId, requesterId) {
+    const { error } = await _supabase
+        .from('friends')
+        .delete()
+        .match({ user_id: requesterId, friend_id: currentUserId, status: 'pending' });
+
+    if (error) throw new Error('Failed to decline friend request');
+}
+
 // list friends
 /**
  * this function lists all the friends of the current user
@@ -58,25 +74,25 @@ export async function acceptFriendRequest(currentUserId, requesterId) {
  * */
 export async function listFriends(currentUserId) {
     const { data: relations, error } = await _supabase
-      .from('friends')
-      .select('*')
-      .or(`and(user_id.eq.${currentUserId},status.eq.accepted),and(friend_id.eq.${currentUserId},status.eq.accepted)`);
-  
+        .from('friends')
+        .select('*')
+        .or(`and(user_id.eq.${currentUserId},status.eq.accepted),and(friend_id.eq.${currentUserId},status.eq.accepted)`);
+
     if (error) throw new Error('Failed to fetch friend relations');
-  
+
     const friendIds = relations.map(rel =>
-      rel.user_id === currentUserId ? rel.friend_id : rel.user_id
+        rel.user_id === currentUserId ? rel.friend_id : rel.user_id
     );
-  
+
     const { data: friends, error: friendError } = await _supabase
-      .from('users')
-      .select('username, id')
-      .in('id', friendIds);
-  
+        .from('users')
+        .select('username, id')
+        .in('id', friendIds);
+
     if (friendError) throw new Error('Failed to fetch friend usernames');
-  
+
     return friends; // Array of { username, id }
-  }
+}
 
 
 // create friend leaderboard
@@ -180,7 +196,7 @@ export async function renderFriendsLeaderboard(userId) {
         thead.appendChild(headerRow);
         table.appendChild(thead);
         // div.innerHTML = ''; // Clear previous content
-        
+
         div.appendChild(table); // Append the new table
 
         // Create table body
@@ -190,11 +206,11 @@ export async function renderFriendsLeaderboard(userId) {
             const row = document.createElement('tr');
 
             const usernameCell = document.createElement('td');
-            usernameCell.textContent = i+". "+friend.username;
+            usernameCell.textContent = i + ". " + friend.username;
 
             const pointsCell = document.createElement('td');
             pointsCell.textContent = friend.points;
-            
+
             row.appendChild(usernameCell);
             row.appendChild(pointsCell);
             tbody.appendChild(row);
@@ -219,10 +235,10 @@ export async function getUsernameFromId(userId, friends) {
     // console.log('Fetching username for userId:', userId);
     // console.log('friends', friends);
     // console.log('username', friends.find(friend => friend.id === userId)?.username);
-    
+
     const username = await friends.find(friend => friend.id === userId)?.username;
     if (!username) {
         throw new Error('User not found');
     }
-    return username  
+    return username
 }
