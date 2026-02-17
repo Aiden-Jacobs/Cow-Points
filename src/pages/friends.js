@@ -141,7 +141,7 @@ async function displayPendingRequests() {
       declineBtn.className = 'decline-request-btn';
       declineBtn.textContent = 'DECLINE';
       // Add red styling for decline button
-      declineBtn.style.backgroundColor = '#ff4d4d'; // Red color
+      // declineBtn.style.backgroundColor = '#ff4d4d'; // Red color - moved to CSS
       declineBtn.onclick = async () => {
         try {
           if (!confirm(`Are you sure you want to decline the request from ${req.username}?`)) return;
