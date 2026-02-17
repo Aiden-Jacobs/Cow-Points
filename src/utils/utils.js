@@ -52,9 +52,9 @@ export async function add_header_buttons(supabase_session) {
                 window.location.reload();
             }
             // this adds the log out button to the header so that it is visible when the user is logged in
-            document.getElementById("header-button-container").appendChild(logoutButton);                
+            document.getElementById("header-button-container").appendChild(logoutButton);
         }
-    } catch (error) { 
+    } catch (error) {
         console.error("user not logged in");
     }
     // print the url to the console so that it can be used for debugging
@@ -83,5 +83,27 @@ export async function add_header_buttons(supabase_session) {
         }
         // this adds the home button to the header so that it is visible when the user is logged in
         document.getElementById("header-button-container").appendChild(homeButton);
+    }
+}
+
+/**
+ * Loads the footer content into the footer-container element.
+ * @returns {Promise<void>}
+ */
+export async function loadFooter() {
+    try {
+        const response = await fetch('src/components/footer.html');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const footerHTML = await response.text();
+        const footerContainer = document.getElementById('footer-container');
+        if (footerContainer) {
+            footerContainer.innerHTML = footerHTML;
+        } else {
+            console.error('Footer container not found');
+        }
+    } catch (error) {
+        console.error('Error loading footer:', error);
     }
 }

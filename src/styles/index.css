@@ -1,0 +1,143 @@
+@font-face {
+  font-family: 'MyCustomFont';
+  src: url('../../Assets/Fonts/PixeloidMono-d94EV.ttf') format('truetype');
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+}
+
+.leaderboard-container {
+  background-color: rgba(128, 128, 128, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  /* width: 400px; */
+  height: 80vh;
+  max-width: 60%;
+  overflow: hidden;
+  margin-top: 1%;
+}
+
+.leaderboard-title {
+  font-family: 'MyCustomFont', Arial, sans-serif;
+  font-size: 36px;
+  color: red;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.leaderboard-table {
+  font-family: 'MyCustomFont', Arial, sans-serif;
+  width: 100%;
+  color: red;
+  font-size: 20px;
+  text-align: left;
+  margin-top: 10px;
+}
+
+.leaderboard-table th {
+  position: sticky;
+  top: 0;
+  text-align: left;
+  padding: 10px 5px;
+  backdrop-filter: blur(15px);
+  color: blue;
+}
+
+.leaderboard-table td {
+  padding: 5px;
+}
+
+.map-button {
+  background-color: #007bffc5;
+  color: white;
+  border: none;
+  padding: 5px 5px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: MyCustomFont;
+}
+
+.scroll-container {
+  max-height: calc(80vh - 150px);
+  overflow-y: auto;
+}
+
+@media screen and (max-width: 480px) {
+  .leaderboard-container {
+    /* overflow: auto; */
+    width: 100%;
+    max-width: 80%;
+    /* margin-top: 1%; */
+    margin-bottom: 5%;
+    height: 70vh;
+  }
+  .leaderboard-title {
+    font-size: 24px;
+  }
+  .leaderboard-table {
+    font-size: 16px;
+  }
+  .scroll-container {
+    max-height: calc(75vh - 150px);
+  }
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  position: relative;
+  background-color: (255, 255, 255, 0.5);
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 90%;
+  max-height: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.modal-content img {
+  max-width: 100%;
+  max-height: 80vh;
+  margin: 0 auto;
+}
+
+.close-button {
+  font-size: 20px;
+  font-weight: bold;
+  background: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: flex-end;
+}
