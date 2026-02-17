@@ -1,18 +1,12 @@
 import { setRandomBackground } from '../utils/utils.js';
 setRandomBackground();
 
-// Import Current Supabase library
-import "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-const { createClient } = supabase;
-
-const SUPABASE_URL = 'https://sagwqkyampwcuzvllbvm.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhZ3dxa3lhbXB3Y3V6dmxsYnZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyNjI5ODAsImV4cCI6MjA0ODgzODk4MH0.K42LmF79J3ZjKhiCkJd7p-Mc7cbj6sySd9hnNT0Aoxc'; // anon key
-
-const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Import Singleton Supabase Client
+import { supabase as _supabase } from '../utils/supabaseClient.js';
 
 // Get session and user ID
 const session = await _supabase.auth.getSession();
-const uuid = session.data.session.user.id;
+const uuid = session.data?.session?.user?.id;
 
 // Fetch user info
 const { data: userData, error: userError } = await _supabase
@@ -37,10 +31,10 @@ if (pointsError) {
 
 // Update map with points
 if (L.DomUtil.get('map') != null) {
-    L.DomUtil.get('map')._leaflet_id = null;
-  }
-  const map = L.map('map').setView([0, 0], 3);
-  
+  L.DomUtil.get('map')._leaflet_id = null;
+}
+const map = L.map('map').setView([0, 0], 3);
+
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 18,
@@ -73,9 +67,9 @@ points.forEach(point => {
     <span><strong>${new Date(point.date_and_time).toLocaleString()}</strong> — ${point.description}</span><br>
     <small>(${point.lat}, ${point.lng})</small><br>
   `;
-// buttons for edit and delete functionality can be added here if needed
-//  <button onclick="editPoint(${point.id})">Edit</button>
-//  <button onclick="deletePoint(${point.id})" style="margin-left: 5px;">Delete</button>
+  // buttons for edit and delete functionality can be added here if needed
+  //  <button onclick="editPoint(${point.id})">Edit</button>
+  //  <button onclick="deletePoint(${point.id})" style="margin-left: 5px;">Delete</button>
 
   listContainer.appendChild(li);
 });
