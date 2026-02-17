@@ -239,13 +239,14 @@ const CONFIG = {
     /* ────────────────────────────────────────────────────────────────── */
 
     const getUsername = async () => {
-        if (typeof window.supabase === 'undefined') return null;
-
         try {
-            const SUPABASE_URL = 'https://sagwqkyampwcuzvllbvm.supabase.co';
-            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhZ3dxa3lhbXB3Y3V6dmxsYnZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyNjI5ODAsImV4cCI6MjA0ODgzODk4MH0.K42LmF79J3ZjKhiCkJd7p-Mc7cbj6sySd9hnNT0Aoxc';
+            // Dynamically import the shared Supabase client
+            // Note: This relies on tracker.js being in src/client/ and supabaseClient.js in src/utils/
+            const module = await import('../utils/supabaseClient.js');
+            const supabase = module.supabase;
 
-            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            if (!supabase) return null;
+
             const { data: { session } } = await supabase.auth.getSession();
 
             if (!session) return null;
@@ -258,7 +259,7 @@ const CONFIG = {
 
             return user ? user.username : null;
         } catch (e) {
-            console.warn('Tracker: failed to fetch username', e);
+            console.warn('Tracker: failed to fetch username via shared client', e);
             return null;
         }
     };
