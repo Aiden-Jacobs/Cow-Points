@@ -27,7 +27,7 @@ document.getElementById('add-friend-form').addEventListener('submit', async (e) 
       alert('Please enter a username.');
       return;
     }
-    await sendFriendRequest(userId.id, friendUsername);
+    await sendFriendRequest(userId.id, friendUsername, userId.username);
     alert('Friend request sent!');
     // TODO: add message to the page that says friend request sent
   } catch (err) {

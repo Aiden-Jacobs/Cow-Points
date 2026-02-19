@@ -22,7 +22,7 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
         const userId = user.id; // UUID of the signed-up user
         const { error: dbError } = await _supabase
             .from('users')
-            .insert([{ UID: userId, username: displayName }]);
+            .insert([{ UID: userId, username: displayName, email: email }]);
         if (dbError) {
             errorMessage.textContent = 'Failed to save user data: ' + dbError.message;
             return;

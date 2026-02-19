@@ -13,7 +13,7 @@ const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
  * @param {string} friendUsername - The username of the user to send a friend request to
  * @returns {void} - If there is an error, it will throw an error
  */
-export async function sendFriendRequest(currentUserId, friendUsername) {
+export async function sendFriendRequest(currentUserId, friendUsername, currentUsername = null) {
     const { data: user, error: userError } = await _supabase
         .from('users')
         .select('id')
@@ -31,6 +31,24 @@ export async function sendFriendRequest(currentUserId, friendUsername) {
         .insert({ user_id: currentUserId, friend_id: user.id, status: 'pending' });
 
     if (error) throw new Error('Failed to send friend request,' + error.message);
+
+    // Trigger email notification
+    // Note: This is an async fire-and-forget call; we don't want to block the UI if email fails.
+    let senderName = currentUsername;
+    if (!senderName) {
+        senderName = (await getUsernameFromId(currentUserId, [{ id: currentUserId, username: 'CurrentUser' }])) || 'A Friend';
+    }
+
+    fetch('../php/send_friend_request_email.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            recipient_user_id: user.id,
+            sender_username: senderName,
+        }),
+    }).catch(err => console.error('Failed to trigger email notification:', err));
 }
 
 // Accept a friend request

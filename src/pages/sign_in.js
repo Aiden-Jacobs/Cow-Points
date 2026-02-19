@@ -18,6 +18,14 @@ document.getElementById('signin-form').addEventListener('submit', async (e) => {
     if (error) {
         errorMessage.textContent = 'Sign-in failed: ' + error.message;
     } else {
+        const { user } = data;
+        // Backfill email if it's missing or update it to ensure correctness
+        if (user && user.email) {
+            await _supabase
+                .from('users')
+                .update({ email: user.email })
+                .eq('UID', user.id);
+        }
         window.location.href = `user_dashboard.html`;
     }
 });

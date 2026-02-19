@@ -34,4 +34,8 @@ return [
         'high_suspicion_threshold'  => 8,
         'ip_prefix_bits'            => 24,  // /24 subnet grouping
     ],
+    'supabase' => [
+        'url'      => 'https://sagwqkyampwcuzvllbvm.supabase.co',
+        'anon_key' => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhZ3dxa3lhbXB3Y3V6dmxsYnZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMyNjI5ODAsImV4cCI6MjA0ODgzODk4MH0.K42LmF79J3ZjKhiCkJd7p-Mc7cbj6sySd9hnNT0Aoxc',
+    ],
 ];
