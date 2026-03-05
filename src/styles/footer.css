@@ -1,6 +1,11 @@
 /* Footer Styles */
+
+/* Ensure page content doesn't hide behind the fixed footer */
+body {
+  padding-bottom: 50px !important;
+}
+
 .site-footer {
-  
   width: 100%;
   text-align: center;
   padding: 5px 0;
@@ -12,6 +17,7 @@
   left: 0;
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(4px);
+  z-index: 1000;
 }
 
 .site-footer a {
