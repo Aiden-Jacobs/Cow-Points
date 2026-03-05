@@ -9,7 +9,7 @@ class User_nav_bar extends HTMLElement {
                         <li><a href="points.html">Points</a></li>
                         <li><a href="friends.html">Friends</a></li>
                         <!-- <li><a href="#add-point">Add Point</a></li> -->
-                        <!-- <li><a href="user_settings.html">Settings</a></li> -->
+                        <li><a href="user_settings.html">Settings</a></li>
                         <!-- Notification Bell -->
                         <li style="position: relative; display: inline-block;">
                             <div id="notification-icon" style="cursor: pointer; position: relative; margin-left: 20px;">
@@ -64,11 +64,24 @@ class User_nav_bar extends HTMLElement {
     if (!session.data.session) return;
     const userId = session.data.session.user.id;
 
+    // Check if notifications are enabled in user preferences
+    const { data: userRow } = await supabase
+      .from('users')
+      .select('notifications_enabled')
+      .eq('UID', userId)
+      .single();
+
     const icon = this.querySelector('#notification-icon');
     const badge = this.querySelector('#notification-badge');
     const dropdown = this.querySelector('#notification-dropdown');
     const list = this.querySelector('#notification-list');
     const markAllBtn = this.querySelector('#mark-all-read');
+
+    // If user has explicitly disabled notifications, hide the bell
+    if (userRow && userRow.notifications_enabled === false) {
+      icon.style.display = 'none';
+      return;
+    }
 
     // Toggle dropdown
     icon.addEventListener('click', async () => {
