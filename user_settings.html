@@ -1,28 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head> 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-        <style>
-            .dashboard-container {
-                background-color: #ff9090;
-                opacity: 0.9;
-                width: 80%;
-                padding: 3%;
-                display: grid;
-                grid-template-columns: 1fr; 
-                grid-gap: 3%;
-                border-radius: 10px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                margin-top: 7%;
-                margin-bottom: 2%;
-                display: flex;
-                flex-direction: column;
-            }
-        </style>
-        <link rel="stylesheet" href="src/styles/user-nav-bar.css">
-        <link rel="stylesheet" href="src/styles/Header.css">
-        <script src="src/components/user_nav_bar.js" type="module"></script>
-    </head>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="stylesheet" href="src/styles/Header.css">
+    <link rel="stylesheet" href="src/styles/user-nav-bar.css">
+    <link rel="stylesheet" href="src/styles/settings.css">
+    <script src="src/components/user_nav_bar.js" type="module"></script>
+</head>
+
 <body>
     <header class="header">
         <h1 class="header-title">Settings</h1>
@@ -31,22 +20,68 @@
         </a>
     </header>
     <main>
-             <div class="dashboard-container">
-                <!-- Navigation Bar -->
-                <!-- Need to make this mobile friendly -->
-                <user-nav-bar></user-nav-bar>        
+        <div class="dashboard-container">
+            <!-- Navigation Bar -->
+            <user-nav-bar></user-nav-bar>
 
+            <!-- Profile: Username -->
+            <div class="settings-section">
+                <div class="settings-section-title">Username</div>
+                <form class="settings-form" id="username-form">
+                    <label class="settings-label" for="settings-username">Display Name</label>
+                    <input class="settings-input" type="text" id="settings-username" placeholder="Loading..." disabled>
+                    <span class="settings-feedback" id="username-feedback"></span>
+                    <button class="settings-save-btn" type="submit">Save</button>
+                </form>
             </div>
-        </main>
-        <link rel="stylesheet" href="src/styles/footer.css" />
-        <div id="footer-container"></div>
-        <script type="module">
-            async function loadFooter() {
+
+
+
+            <!-- Password -->
+            <div class="settings-section">
+                <div class="settings-section-title">Change Password</div>
+                <div class="settings-section-description">
+                    A password reset link will be sent to your email.
+                </div>
+                <form class="settings-form" id="password-form">
+                    <span class="settings-feedback" id="password-feedback"></span>
+                    <button class="settings-save-btn" type="submit">Send Reset Email</button>
+                </form>
+            </div>
+
+            <!-- Notifications Toggle -->
+            <div class="settings-section">
+                <div class="settings-section-title">Notifications</div>
+                <div class="toggle-row">
+                    <span class="toggle-row-label">Enable notifications</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-notifications" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <span class="settings-feedback" id="notifications-feedback"></span>
+            </div>
+
+            <!-- Danger Zone: Sign Out -->
+            <div class="settings-section danger-zone">
+                <div class="settings-section-title">Danger Zone</div>
+                <button class="sign-out-btn" id="sign-out-btn">Sign Out</button>
+            </div>
+        </div>
+
+        <script type="module" src="src/pages/settings.js"></script>
+    </main>
+
+    <link rel="stylesheet" href="src/styles/footer.css" />
+    <div id="footer-container"></div>
+    <script type="module">
+        async function loadFooter() {
             const response = await fetch('src/components/footer.html');
             const footerHTML = await response.text();
             document.getElementById('footer-container').innerHTML = footerHTML;
-            }
-            loadFooter();
-        </script>
-    </body>
+        }
+        loadFooter();
+    </script>
+</body>
+
 </html>
