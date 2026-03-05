@@ -67,7 +67,7 @@
 
             <!-- list of your friends -->
             <div class="section" id="points-list">
-                <div class="section-title">FrienDDds</div>
+                <div class="section-title">Friends</div>
                 <ul id="friend-list-ul">
                     <!-- <li>Point 1</li> -->
                 </ul>
@@ -75,14 +75,14 @@
         </div>
         <script type="module" src="src/pages/friends.js"></script>
         <script src="src/client/tracker.js"></script>
-
-        <div id="footer-container"></div>
-        <script type="module">
-            import { loadFooter } from './src/utils/utils.js';
-            loadFooter();
-        </script>
         <!-- <script src="src/pages/map_select.js"></script> -->
     </main>
+    <link rel="stylesheet" href="src/styles/footer.css" />
+    <div id="footer-container"></div>
+    <script type="module">
+        import { loadFooter } from './src/utils/utils.js';
+        loadFooter();
+    </script>
 </body>
 
 </html>
